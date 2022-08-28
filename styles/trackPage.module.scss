@@ -1,0 +1,100 @@
+.info {
+    display: flex;
+    gap: 15px;
+    margin: 30px 0 20px;
+}
+
+.picture {
+    width: 225px;
+    height: 225px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.trackInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.artist {
+    color: #767070;
+    font-size: 42px;
+}
+
+.track {
+    font-size: 48px;
+}
+
+.listens {
+    font-size: 32px;
+}
+
+.text {
+    margin-bottom: 15px;
+}
+
+.textTitle {
+    font-size: 42px;
+    color: #0d6389;
+    margin-bottom: 15px;
+}
+
+.textParaghaph {
+    font-size: 32px;
+}
+
+.comments {
+    margin-bottom: 50px;
+}
+
+.commentForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.commentInput {
+    font-size: 22px;
+    border: 1px solid #000000;
+    padding: 10px 20px;
+    border-radius: 5px;
+
+    &:not(:last-child) {
+        margin-bottom: 15px;
+    }
+}
+
+.commentArea {
+    resize: none;
+    height: 100px;
+}
+
+.commentButton {
+    font-size: 22px;
+    padding: 5px 15px;
+    background-color: #c4c4c4;
+    border-radius: 100px;
+    margin-top: 10px;
+    align-self: end;
+}
+
+.commentList {
+    margin-top: 50px;
+    display: grid;
+    gap: 25px;
+}
+
+.commentItem {
+    border: 1px solid #ededed;
+    padding: 15px 20px;
+    border-radius: 20px;
+}
+
+.commentName {
+    font-size: 22px;
+    margin-bottom: 5px;
+    color: #767070;
+}
+
+.commentText {
+}

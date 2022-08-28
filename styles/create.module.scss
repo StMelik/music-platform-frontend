@@ -1,0 +1,33 @@
+.title {
+    font-size: 72px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 400;
+}
+
+.formTrack {
+    display: flex;
+    flex-direction: column;
+    max-width: 650px;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+.input {
+    font-size: 32px;
+    padding: 10px 40px;
+    border-radius: 5px;
+    background-color: #ededed;
+}
+
+.textarea {
+    resize: none;
+}
+
+.button {
+    padding: 5px 20px;
+    border-radius: 100px;
+    font-size: 24px;
+    background-color: #ededed;
+    align-self: flex-end;
+}

@@ -5,7 +5,9 @@
 }
 
 body {
-    font-family: Roboto;
+    font-family: Inter;
+    background-color: #080808;
+    color: #ededed;
 }
 
 ul {
@@ -27,4 +29,21 @@ button {
     border: none;
     background-color: transparent;
     cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+button:hover {
+    opacity: 0.5;
+}
+
+.container {
+    max-width: 1110px;
+    margin: 0 auto;
+    padding: 0 15px;
+    box-sizing: content-box;
+    margin-top: 100px;
+}
+
+textarea::placeholder {
+    font-family: Roboto;
 }

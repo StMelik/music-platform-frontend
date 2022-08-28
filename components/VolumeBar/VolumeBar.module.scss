@@ -1,0 +1,21 @@
+.volumeBar {
+    display: flex;
+    gap: 15px;
+    margin-left: auto;
+}
+
+.icon {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-image: url("../../assets/icons/volume-icon.svg");
+    width: 25px;
+    height: 25px;
+}
+
+.pange {
+}
+
+.progressTime {
+    color: black;
+}

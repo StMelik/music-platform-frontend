@@ -5,13 +5,24 @@ function Index() {
 
     return (
         <>
-            <NavBar />
+            <NavBar isMain />
             <div className={styles.main}>
-                <h1 className={styles.title}>Добро пожаловать!</h1>
-                <h3 className={styles.subtitle}>Здесь собраны все лучшие треки</h3>
+                <div className="container main-container">
+                    <div className={styles.mainWrapper}>
+                        <h1 className={styles.title}>Добро пожаловать!</h1>
+                        <h3 className={styles.subtitle}>Здесь собраны все лучшие треки</h3>
+                    </div>
+                </div>
             </div>
-        </>
 
+            <style jsx>
+                {`
+                    .main-container {
+                        margin-top: 0;
+                    }
+                `}
+            </style>
+        </>
     )
 }
 
