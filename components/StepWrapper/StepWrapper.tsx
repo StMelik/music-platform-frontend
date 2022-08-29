@@ -1,6 +1,4 @@
 import React from 'react'
-
-// import Link from 'next/link'
 import styles from './StepWrapper.module.scss'
 
 interface TrackItemProps {
@@ -10,7 +8,6 @@ interface TrackItemProps {
 }
 
 const StepWrapper: React.FC<TrackItemProps> = ({ activeStep, setActiveStep, children }) => {
-    // const router = useRouter()
     const steps = ['1', '2', '3']
 
 
@@ -27,39 +24,22 @@ const StepWrapper: React.FC<TrackItemProps> = ({ activeStep, setActiveStep, chil
         }
     }
 
-    function handleNextStep() {
-        setActiveStep(prev => prev + 1)
-    }
-
-    function handlePrevStep() {
-        setActiveStep(prev => prev - 1)
-    }
-
     return (
         <>
             <div className={styles.steps}>
-                <button
-                    className={styles.button}
-                    onClick={handlePrevStep}
-                    disabled={activeStep === 0}
-                >Назад</button>
                 {steps.map((step, i) =>
-                    <li
+                    <button
                         key={i}
                         className={getClass(i)}
-                    >{step}</li>
+                        onClick={() => setActiveStep(i)}
+                        disabled={i > activeStep}
+                    >{step}</button>
                 )}
-                <button
-                    className={styles.button}
-                    onClick={handleNextStep}
-                    disabled={activeStep === steps.length - 1}
-                >Далее</button>
             </div>
             <div className="content">
                 {children}
             </div>
         </>
-
     )
 }
 

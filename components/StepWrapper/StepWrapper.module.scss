@@ -1,6 +1,6 @@
 .steps {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     margin-bottom: 50px;
 }
@@ -14,8 +14,9 @@
     justify-content: center;
     align-items: center;
     font-size: 48px;
-
+    color: #000;
     position: relative;
+    cursor: default;
 
     &::after {
         content: "";
@@ -29,12 +30,20 @@
         left: 0;
         border-radius: 50%;
     }
+
+    &:hover {
+        opacity: 1;
+    }
 }
 
 .stepDone {
+    cursor: pointer;
     &::after {
         background-color: darkgreen;
         background-image: url("../../assets/icons/done-icon.svg");
+    }
+    &:hover {
+        opacity: 0.5;
     }
 }
 
@@ -43,11 +52,4 @@
         background-color: #ffc107;
         background-image: url("../../assets/icons/wait-icon.svg");
     }
-}
-
-.button {
-    padding: 5px 15px;
-    border-radius: 15px;
-    font-size: 20px;
-    background-color: #d4d4d4;
 }

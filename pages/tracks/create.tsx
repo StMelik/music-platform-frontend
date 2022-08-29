@@ -1,32 +1,32 @@
 import { useState } from "react";
-import Button from "../../components/Button/Button";
-import FileUpload from "../../components/FileUpload/FileUpload";
 import StepWrapper from "../../components/StepWrapper/StepWrapper";
 import { useInput } from "../../hooks/useInput";
 import MainLayout from "../../layouts/MainLayout";
 import styles from '../../styles/create.module.scss'
 import { useRouter } from "../../node_modules/next/router";
 import { addTrack } from "../../utils/api";
+import Step1 from "../../components/Step1/Step1";
+import Step2 from "../../components/Step2/Step2";
+import Step3 from "../../components/Step3/Step3";
 
 function Create() {
-    const [activeStep, setActiveStep] = useState(1)
+    const router = useRouter()
+    const [activeStep, setActiveStep] = useState(0)
+    const formValue = useInput({ name: '', artist: '', text: '' })
+
+
     const [picture, setPicture] = useState(null)
     const [audio, setAudio] = useState(null)
-
-    const router = useRouter()
-
-    const name = useInput('')
-    const artist = useInput('')
-    const text = useInput('')
 
     function handleNextStep() {
         if (activeStep < 2) {
             setActiveStep(prev => prev + 1)
         } else {
+            const { name, artist, text } = formValue.value
             const formData = new FormData()
-            formData.append('name', name.value)
-            formData.append('artist', artist.value)
-            formData.append('text', text.value)
+            formData.append('name', name)
+            formData.append('artist', artist)
+            formData.append('text', text)
             formData.append('picture', picture)
             formData.append('audio', audio)
 
@@ -36,91 +36,31 @@ function Create() {
         }
     }
 
-    function handlePrevStep() {
-        setActiveStep(prev => prev - 1)
-    }
-
     return (
         <MainLayout>
             <div>
                 <h1 className={styles.title}>Загрузка нового трека</h1>
                 <StepWrapper activeStep={activeStep} setActiveStep={setActiveStep}>
                     {activeStep === 0 &&
-                        <form
-                            className={styles.formTrack}
-                            onSubmit={e => e.preventDefault()}
-                        >
-                            <input
-                                className={styles.input}
-                                type="text"
-                                placeholder="Введите название трека"
-                                {...name}
-                            />
-                            <input
-                                className={styles.input}
-                                type="text"
-                                placeholder="Введите имя автора"
-                                {...artist}
-                            />
-                            <textarea
-                                className={`${styles.input} ${styles.textarea}`}
-                                name="text"
-                                placeholder="Введите текст песни"
-                                {...text}
-                            />
-                            {name.value && artist.value &&
-                                <button
-                                    className={styles.button}
-                                    type="button"
-                                    onClick={handleNextStep}
-                                >
-                                    Далее
-                                </button>
-                            }
-
-                        </form>
+                        <Step1
+                            onNext={handleNextStep}
+                            value={formValue.value}
+                            onChange={formValue.onChange}
+                        />
                     }
                     {activeStep === 1 &&
-                        <>
-                            <FileUpload
-                                setFile={setPicture}
-                                accept='image/*'
-                            >
-                                <Button text='Загрузите обложку' />
-                                <button>Загрузите обложку</button>
-                            </FileUpload>
-                            {picture &&
-                                <button
-                                    className={styles.button}
-                                    type="button"
-                                    onClick={handleNextStep}
-                                >
-                                    Далее
-                                </button>
-                            }
-                        </>
-
+                        <Step2
+                            picture={picture}
+                            setPicture={setPicture}
+                            onNext={handleNextStep}
+                        />
                     }
                     {activeStep === 2 &&
-
-                        <>
-                            <FileUpload
-                                setFile={setAudio}
-                                accept='audio/*'
-                            >
-                                <Button text='Загрузите аудио' />
-                            </FileUpload>
-                            {audio &&
-                                <button
-                                    className={styles.button}
-                                    type="button"
-                                    onClick={handleNextStep}
-                                >
-                                    Сохранить трек
-                                </button>
-                            }
-
-                        </>
+                        <Step3
+                            audio={audio}
+                            setAudio={setAudio}
+                            onNext={handleNextStep}
+                        />
                     }
                 </StepWrapper>
             </div>
