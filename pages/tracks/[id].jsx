@@ -12,19 +12,19 @@ const TrackPage = ({ serverTrack }) => {
     const [track, setTrack] = useState(serverTrack)
     const router = useRouter()
 
-    const username = useInput('')
-    const text = useInput('')
+    const defaulValue = { username: '', text: '' }
+    const { value, onChange, setValue } = useInput(defaulValue)
 
     async function handleAddComment() {
         const commentData = {
-            username: username.value,
-            text: text.value,
+            ...value,
             trackId: track._id
         }
 
         try {
             const comment = await addComment(commentData)
             setTrack({ ...track, comments: [...track.comments, comment] })
+            setValue(defaulValue)
         } catch (e) {
             console.log(e);
         }
@@ -63,13 +63,17 @@ const TrackPage = ({ serverTrack }) => {
                             className={styles.commentInput}
                             type="text"
                             placeholder='Ваше имя'
-                            {...username}
+                            name='username'
+                            value={value.username}
+                            onChange={onChange}
                         />
                         <textarea
                             className={`${styles.commentInput} ${styles.commentArea}`}
                             type="text"
                             placeholder='Ваш комментарий'
-                            {...text}
+                            name='text'
+                            value={value.text}
+                            onChange={onChange}
                         />
                         <button
                             className={styles.commentButton}
@@ -90,11 +94,8 @@ const TrackPage = ({ serverTrack }) => {
                         )}
                     </ul>
                 </div>
-
-
             </div>
         </MainLayout>
-
     )
 }
 
