@@ -5,17 +5,17 @@ const initialState: IPlayerState = {
     duration: 0,
     active: null,
     volume: 50,
-    pause: true,
+    isPause: true,
 }
 
 export const playerReducer = (state = initialState, action: PlayerAction): IPlayerState => {
     switch (action.type) {
         case PlayerActionsTypes.PAUSE:
-            return { ...state, pause: true }
+            return { ...state, isPause: true }
         case PlayerActionsTypes.PLAY:
-            return { ...state, pause: false }
+            return { ...state, isPause: false }
         case PlayerActionsTypes.SET_ACTIVE:
-            return { ...state, active: action.payload, duration: 0, currentTime: 0 }
+            return { ...state, active: action.payload, duration: 0, currentTime: 0, isPause: true }
         case PlayerActionsTypes.SET_CURRENT_TIME:
             return { ...state, currentTime: action.payload }
         case PlayerActionsTypes.SET_DURATION:

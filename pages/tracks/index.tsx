@@ -71,7 +71,6 @@ function Index() {
                         onInput={search}
                     />
                 </label>
-
                 <TrackList tracks={tracks} />
             </MainLayout>
             <Popup

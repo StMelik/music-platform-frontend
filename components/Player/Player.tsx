@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useActions } from '../../hooks/useActions'
 import { useTypedSelector } from '../../hooks/useTypedSelector'
@@ -6,13 +6,12 @@ import { SERVER_URL } from '../../utils/const'
 import ProgressBar from '../ProgressBar/ProgressBar'
 import VolumeBar from '../VolumeBar/VolumeBar'
 
-// import Link from 'next/link'
 import styles from './Player.module.scss'
 
-let audio;
+let audio = null;
 
 const Player = () => {
-    const { pause, volume, active, duration, currentTime } = useTypedSelector(state => state.player)
+    const { isPause, volume, active, duration, currentTime } = useTypedSelector(state => state.player)
     const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction } = useActions()
 
     useEffect(() => {
@@ -20,12 +19,19 @@ const Player = () => {
             audio = new Audio()
         } else {
             setAudio()
-            play()
+            handlePlayTrack()
         }
     }, [active])
 
+    useEffect(() => {
+        if (audio.src) {
+            isPause ? audio.pause() : audio.play()
+        }
+    }, [isPause])
+
     function setAudio() {
         if (active) {
+            audio.src = null
             audio.src = SERVER_URL + active.audio
             audio.volume = volume / 100
             audio.onloadedmetadata = () => {
@@ -37,14 +43,8 @@ const Player = () => {
         }
     }
 
-    function play() {
-        if (pause) {
-            playTrackAction()
-            audio.play()
-        } else {
-            pauseTrackAction()
-            audio.pause()
-        }
+    function handlePlayTrack() {
+        isPause ? playTrackAction() : pauseTrackAction()
     }
 
     function changeVolume(e: React.ChangeEvent<HTMLInputElement>) {
@@ -59,15 +59,13 @@ const Player = () => {
         setCurrentTimeAction(currentTime)
     }
 
-    if (!active) {
-        return null
-    }
+    if (!active) return null
 
     return (
         <div className={styles.player}>
             <button
-                className={`${styles.button} ${pause ? styles.play : styles.pause}`}
-                onClick={play}
+                className={`${styles.button} ${isPause ? styles.play : styles.pause}`}
+                onClick={handlePlayTrack}
             />
             <div className={styles.info}>
                 <p className={styles.infoName}>{active.name}</p>

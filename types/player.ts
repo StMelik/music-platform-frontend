@@ -5,7 +5,7 @@ export interface IPlayerState {
     volume: number;
     duration: number;
     currentTime: number;
-    pause: boolean;
+    isPause: boolean;
 }
 
 export enum PlayerActionsTypes {

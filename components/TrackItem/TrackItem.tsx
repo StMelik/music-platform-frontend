@@ -6,15 +6,23 @@ import { ITrack } from '../../types/track'
 import { useRouter } from '../../node_modules/next/router'
 import { useActions } from '../../hooks/useActions'
 import { SERVER_URL } from '../../utils/const'
+import { useTypedSelector } from '../../hooks/useTypedSelector'
+import { formatTime } from '../../utils/formatTime'
 
 interface TrackItemProps {
     track: ITrack,
-    active?: boolean,
 }
 
-const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
+const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
     const router = useRouter()
     const { pauseTrackAction, playTrackAction, setActiveTrackAction, openDeletePopupAction } = useActions()
+
+    const { isPause, active, duration, currentTime } = useTypedSelector(state => state.player)
+
+    const isTrack = active?._id === track._id
+    const isPlay = isTrack && !isPause
+
+    const itemCl = [styles.item, styles.activeItem]
 
     function handleDeleteTrack(e) {
         e.stopPropagation()
@@ -22,17 +30,24 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
         openDeletePopupAction(track._id)
     }
 
-    function play(e) {
+    function handlePlayTrack(e) {
         e.stopPropagation()
-        setActiveTrackAction(track)
-        playTrackAction()
+
+        if (active && isTrack) {
+            isPause ? playTrackAction() : pauseTrackAction()
+        } else {
+            setActiveTrackAction(track)
+        }
     }
 
     return (
-        <li className={styles.item} onClick={() => router.push('/tracks/' + track._id)}>
+        <li
+            className={isPlay ? itemCl.join(' ') : itemCl[0]}
+            onClick={() => router.push('/tracks/' + track._id)}
+        >
             <button
-                className={`${styles.button} ${active ? styles.pause : styles.play}`}
-                onClick={play}
+                className={`${styles.button} ${isPlay ? styles.pause : styles.play}`}
+                onClick={handlePlayTrack}
             />
             <img
                 className={styles.picture}
@@ -48,8 +63,10 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
                     className={styles.buttonDelete}
                     onClick={handleDeleteTrack}
                 ></button>
-                {active &&
-                    <div className={styles.time}>02:42/03:34</div>
+                {isPlay &&
+                    <div className={styles.time}>
+                        {`${formatTime(currentTime)}/${formatTime(duration)}`}
+                    </div>
                 }
             </div>
         </li >
