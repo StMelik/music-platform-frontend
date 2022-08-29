@@ -1,20 +1,12 @@
 import React, { useState } from 'react'
 
-// import Link from 'next/link'
 import styles from '../../styles/trackPage.module.scss'
 import MainLayout from "../../layouts/MainLayout";
-// import { ITrack } from '../../types/track'
 import { useRouter } from '../../node_modules/next/router'
 import Button from "../../components/Button/Button";
 import { SERVER_URL } from '../../utils/const';
-import axios from 'axios'
 import { useInput } from '../../hooks/useInput'
-
-
-// interface TrackItemProps {
-//     track: ITrack,
-//     active?: boolean,
-// }
+import { getTrack, addComment } from '../../utils/api'
 
 const TrackPage = ({ serverTrack }) => {
     const [track, setTrack] = useState(serverTrack)
@@ -23,19 +15,19 @@ const TrackPage = ({ serverTrack }) => {
     const username = useInput('')
     const text = useInput('')
 
-    async function addComment() {
-        try {
-            const response = await axios.post(SERVER_URL + 'tracks/comment', {
-                username: username.value,
-                text: text.value,
-                trackId: track._id
-            })
-            setTrack({ ...track, comments: [...track.comments, response.data] })
+    async function handleAddComment() {
+        const commentData = {
+            username: username.value,
+            text: text.value,
+            trackId: track._id
+        }
 
+        try {
+            const comment = await addComment(commentData)
+            setTrack({ ...track, comments: [...track.comments, comment] })
         } catch (e) {
             console.log(e);
         }
-
     }
 
     return (
@@ -61,7 +53,7 @@ const TrackPage = ({ serverTrack }) => {
                 </div>
                 <div className={styles.text}>
                     <p className={styles.textTitle}>Слова песни</p>
-                    <p className={styles.textParaghaph}>Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi maiores expedita tempora in blanditiis officiis dolorum cupiditate, sequi vitae culpa quas consequatur provident, error dolores aut eligendi nam ipsum. Fugit!</p>
+                    <p className={styles.textParaghaph}>{track.text}</p>
                 </div>
 
                 <div className={styles.comments}>
@@ -82,7 +74,7 @@ const TrackPage = ({ serverTrack }) => {
                         <button
                             className={styles.commentButton}
                             type="button"
-                            onClick={addComment}
+                            onClick={handleAddComment}
                         >Отправить</button>
                     </form>
 
@@ -109,11 +101,11 @@ const TrackPage = ({ serverTrack }) => {
 export default TrackPage
 
 export const getServerSideProps = async ({ params }) => {
-    const response = await axios.get(SERVER_URL + 'tracks/' + params.id)
+    const track = await getTrack(params.id)
 
     return {
         props: {
-            serverTrack: response.data
+            serverTrack: track
         }
     }
 }

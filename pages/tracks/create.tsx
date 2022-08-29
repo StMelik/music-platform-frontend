@@ -5,9 +5,8 @@ import StepWrapper from "../../components/StepWrapper/StepWrapper";
 import { useInput } from "../../hooks/useInput";
 import MainLayout from "../../layouts/MainLayout";
 import styles from '../../styles/create.module.scss'
-import axios from 'axios'
-import { SERVER_URL } from "../../utils/const";
 import { useRouter } from "../../node_modules/next/router";
+import { addTrack } from "../../utils/api";
 
 function Create() {
     const [activeStep, setActiveStep] = useState(1)
@@ -31,7 +30,7 @@ function Create() {
             formData.append('picture', picture)
             formData.append('audio', audio)
 
-            axios.post(SERVER_URL + 'tracks', formData)
+            addTrack(formData)
                 .then(() => router.push('/tracks'))
                 .catch(console.log)
         }

@@ -1,16 +1,15 @@
 import { Dispatch } from "react"
 import { TrackAction, TrackActionTypes } from "../../types/track"
-import axios from 'axios'
-import { SERVER_URL } from "../../utils/const"
+import { fetchTracks, searchTrack } from "../../utils/api"
 
 
 export const fetchTracksAction = () => {
     return async (dispatch: Dispatch<TrackAction>) => {
         try {
-            const response = await axios.get(SERVER_URL + 'tracks')
+            const tracks = await fetchTracks()
             dispatch({
                 type: TrackActionTypes.FETCH_TRACKS,
-                payload: response.data
+                payload: tracks
             })
 
         } catch (e) {
@@ -25,10 +24,10 @@ export const fetchTracksAction = () => {
 export const searchTracksAction = (query: string) => {
     return async (dispatch: Dispatch<TrackAction>) => {
         try {
-            const response = await axios.get(SERVER_URL + 'tracks/search?query=' + query)
+            const tracks = await searchTrack(query)
             dispatch({
                 type: TrackActionTypes.FETCH_TRACKS,
-                payload: response.data
+                payload: tracks
             })
 
         } catch (e) {

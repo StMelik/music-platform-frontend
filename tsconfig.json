@@ -4,7 +4,7 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -14,9 +14,9 @@
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    // "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "moduleResolution": "node",
     "resolveJsonModule": true
   },
   "include": [
@@ -26,6 +26,7 @@
     "pages/_app.js"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next"
   ]
 }
