@@ -49,9 +49,9 @@ export const addComment = async (comment: IComment) => {
     return response.data
 }
 
-export const addListens = async (id: string) => {
+export const addListens = (id: string) => {
     try {
-        return await axios.post(`listen/${id}`, configApi)
+        axios.post(`tracks/listen/${id}`, null, configApi)
     } catch (e) {
         console.log("Произошла ошибка при добавлении прослушивания трека");
     }

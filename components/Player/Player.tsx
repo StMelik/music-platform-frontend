@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useActions } from '../../hooks/useActions'
 import { useTypedSelector } from '../../hooks/useTypedSelector'
+import { addListens } from '../../utils/api'
 import { SERVER_URL } from '../../utils/const'
 import ProgressBar from '../ProgressBar/ProgressBar'
 import VolumeBar from '../VolumeBar/VolumeBar'
@@ -12,14 +13,17 @@ let audio = null;
 
 const Player = () => {
     const { isPause, volume, active, duration, currentTime } = useTypedSelector(state => state.player)
-    const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction } = useActions()
+    const { tracks } = useTypedSelector(state => state.track)
+    const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction, setActiveTrackAction } = useActions()
 
     useEffect(() => {
         if (!audio) {
             audio = new Audio()
+
         } else {
             setAudio()
             handlePlayTrack()
+            audio.addEventListener('ended', endedTrack)
         }
     }, [active])
 
@@ -38,9 +42,23 @@ const Player = () => {
                 setDurationAction(Math.ceil(audio.duration))
             }
             audio.ontimeupdate = () => {
-                setCurrentTimeAction(Math.ceil(audio.currentTime))
+                const currentTimeTrack = Math.ceil(audio.currentTime)
+                setCurrentTimeAction(currentTimeTrack)
             }
         }
+    }
+
+    function endedTrack() {
+        addListens(active._id)
+        playNextTrack()
+        audio.removeEventListener('ended', endedTrack)
+    }
+
+    function playNextTrack() {
+        const currentIndex = tracks.indexOf(active)
+        const nextTrack = tracks[currentIndex + 1]
+
+        !!nextTrack ? setActiveTrackAction(nextTrack) : pauseTrackAction()
     }
 
     function handlePlayTrack() {
