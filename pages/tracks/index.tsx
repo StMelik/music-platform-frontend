@@ -64,10 +64,14 @@ function Index() {
                         onClick={() => router.push('/tracks/create')}
                     />
                 </div>
-                <input type="text"
-                    value={query}
-                    onInput={search}
-                />
+                <label className={styles.search}>
+                    <p>Поиск:</p>
+                    <input type="text"
+                        value={query}
+                        onInput={search}
+                    />
+                </label>
+
                 <TrackList tracks={tracks} />
             </MainLayout>
             <Popup
