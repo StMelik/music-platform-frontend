@@ -19,12 +19,16 @@ export interface ITrack {
 export interface ITrackState {
     tracks: ITrack[],
     error: string,
+    deletePopupOpened: boolean,
+    trackId: string,
 }
 
 export enum TrackActionTypes {
     FETCH_TRACKS = 'FETCH_TRACKS',
     FETCH_TRACKS_ERROR = 'FETCH_TRACK_ERROR',
-
+    OPEN_POPUP_DELETE = 'OPEN_POPUP_DELETE',
+    CLOSE_POPUP_DELETE = 'CLOSE_POPUP_DELETE',
+    DELETE_TRACK = 'DELETE_TRACK',
 }
 
 interface FetchTracksAction {
@@ -37,4 +41,23 @@ interface FetchTracksErrorAction {
     payload: string,
 }
 
-export type TrackAction = FetchTracksAction | FetchTracksErrorAction
+interface OpenPopupDeleteAction {
+    type: TrackActionTypes.OPEN_POPUP_DELETE,
+    payload: string,
+}
+
+interface ClosePopupDeleteAction {
+    type: TrackActionTypes.CLOSE_POPUP_DELETE
+}
+
+interface DeleteTrackAction {
+    type: TrackActionTypes.DELETE_TRACK,
+    payload: string,
+}
+
+export type TrackAction =
+    FetchTracksAction |
+    FetchTracksErrorAction |
+    OpenPopupDeleteAction |
+    ClosePopupDeleteAction |
+    DeleteTrackAction

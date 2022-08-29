@@ -1,7 +1,6 @@
 import { Dispatch } from "react"
 import { TrackAction, TrackActionTypes } from "../../types/track"
-import { fetchTracks, searchTrack } from "../../utils/api"
-
+import { deleteTrack, fetchTracks, searchTrack } from "../../utils/api"
 
 export const fetchTracksAction = () => {
     return async (dispatch: Dispatch<TrackAction>) => {
@@ -37,4 +36,22 @@ export const searchTracksAction = (query: string) => {
             })
         }
     }
+}
+
+export const deleteTrackAction = (id: string) => {
+    return async (dispatch: Dispatch<TrackAction>) => {
+        const trackId = await deleteTrack(id)
+        dispatch({
+            type: TrackActionTypes.DELETE_TRACK,
+            payload: trackId
+        })
+    }
+}
+
+export const openDeletePopupAction = (payload: string) => {
+    return { type: TrackActionTypes.OPEN_POPUP_DELETE, payload }
+}
+
+export const closeDeletePopupAction = () => {
+    return { type: TrackActionTypes.CLOSE_POPUP_DELETE }
 }

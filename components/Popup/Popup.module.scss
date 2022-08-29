@@ -1,0 +1,48 @@
+.popup {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #00000080;
+}
+
+.popupContent {
+    padding: 25px;
+    max-width: 600px;
+    background-color: #ededed;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    border: 3px solid #000;
+    position: relative;
+}
+
+.title {
+    color: #000;
+}
+
+.confirmButton {
+    padding: 10px 20px;
+    background-color: #000;
+    color: #ededed;
+    font-size: 24px;
+    border-radius: 100px;
+}
+
+.deleteButton {
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-image: url("../../assets/icons/close-icon.svg");
+    width: 40px;
+    height: 40px;
+}

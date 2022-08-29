@@ -14,10 +14,12 @@ interface TrackItemProps {
 
 const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
     const router = useRouter()
-    const { pauseTrackAction, playTrackAction, setActiveTrackAction } = useActions()
+    const { pauseTrackAction, playTrackAction, setActiveTrackAction, openDeletePopupAction } = useActions()
 
     function handleDeleteTrack(e) {
         e.stopPropagation()
+        console.log(track._id);
+        openDeletePopupAction(track._id)
     }
 
     function play(e) {
@@ -50,7 +52,6 @@ const TrackItem: React.FC<TrackItemProps> = ({ track, active = false }) => {
                     <div className={styles.time}>02:42/03:34</div>
                 }
             </div>
-
         </li >
     )
 }

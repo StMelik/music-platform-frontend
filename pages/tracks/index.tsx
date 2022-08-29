@@ -1,5 +1,4 @@
 import MainLayout from "../../layouts/MainLayout";
-import { ITrack } from "../../types/track";
 import styles from '../../styles/tracks.module.scss'
 import { useRouter } from "next/router";
 import TrackList from "../../components/TrackList/TrackList";
@@ -10,7 +9,10 @@ import { NextThunkDispatch, wrapper } from "../../store/index";
 import { useDispatch } from 'react-redux'
 
 import { fetchTracksAction, searchTracksAction } from "../../store/actions-creators/track";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+import Popup from '../../components/Popup/Popup'
+import { useActions } from "../../hooks/useActions";
 
 function Index() {
     const router = useRouter()
@@ -19,9 +21,16 @@ function Index() {
     const [timer, setTimer] = useState(null)
 
 
-    const { tracks, error } = useTypedSelector(store => store.track)
+    const { tracks, error, deletePopupOpened, trackId } = useTypedSelector(store => store.track)
+
+    const { closeDeletePopupAction, deleteTrackAction } = useActions()
 
     const dispatch = useDispatch() as NextThunkDispatch
+
+    useEffect(() => {
+        document.body.style.overflowY = deletePopupOpened ? "hidden" : ""
+        document.body.style.paddingRight = deletePopupOpened ? "16px" : "0"
+    }, [deletePopupOpened])
 
     async function search(e: React.ChangeEvent<HTMLInputElement>) {
         setQuery(e.target.value)
@@ -33,8 +42,6 @@ function Index() {
                 await dispatch(await searchTracksAction(e.target.value))
             }, 500)
         )
-
-
     }
 
     if (error) {
@@ -46,23 +53,32 @@ function Index() {
     }
 
     return (
-        <MainLayout
-            title="Список треков - Музыкальная площадка"
-        >
-            <div className={styles.top}>
-                <h3 className={styles.title}>Список треков</h3>
-                <Button
-                    text="Загрузить"
-                    onClick={() => router.push('/tracks/create')}
+        <>
+            <MainLayout
+                title="Список треков - Музыкальная площадка"
+            >
+                <div className={styles.top}>
+                    <h3 className={styles.title}>Список треков</h3>
+                    <Button
+                        text="Загрузить"
+                        onClick={() => router.push('/tracks/create')}
+                    />
+                </div>
+                <input type="text"
+                    value={query}
+                    onInput={search}
                 />
-            </div>
-            <input type="text"
-                value={query}
-                onInput={search}
-            />
-            <TrackList tracks={tracks} />
-        </MainLayout>
-
+                <TrackList tracks={tracks} />
+            </MainLayout>
+            <Popup
+                opened={deletePopupOpened}
+                textButton="Удалить"
+                title="Вы уверены?"
+                onClose={closeDeletePopupAction}
+                onConfirm={() => deleteTrackAction(trackId)}
+            >
+            </Popup>
+        </>
     )
 }
 
