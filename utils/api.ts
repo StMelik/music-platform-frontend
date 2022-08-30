@@ -1,4 +1,5 @@
 import axios from "axios"
+import { IAlbum } from "../types/album"
 import { IComment, ITrack } from "../types/track"
 import { SERVER_URL } from "./const"
 
@@ -6,6 +7,7 @@ const configApi = {
     baseURL: SERVER_URL,
 }
 
+// Треки
 export const fetchTracks = async (count?: number, offset?: number) => {
     const response = await axios.get('tracks', {
         ...configApi,
@@ -49,10 +51,60 @@ export const addComment = async (comment: IComment) => {
     return response.data
 }
 
-export const addListens = (id: string) => {
+// Альбомы
+export const fetchAlbums = async (count?: number, offset?: number) => {
     try {
-        axios.post(`tracks/listen/${id}`, null, configApi)
+        const responce = await axios.get('albums', {
+            ...configApi,
+            params: { count, offset }
+        })
+        return responce.data
     } catch (e) {
-        console.log("Произошла ошибка при добавлении прослушивания трека");
+        console.log("Произошла ошибка при загрузке альбомов");
+    }
+}
+
+export const getAlbum = async (id: string) => {
+    try {
+        const responce = await axios.get(`albums/${id}`, configApi)
+        return responce.data
+    } catch (e) {
+        console.log("Произошла ошибка при загрузке альбома");
+    }
+}
+
+export const createAlbum = async (album: IAlbum) => {
+    try {
+        const responce = await axios.post('albums', album, configApi)
+        return responce.data
+    } catch (e) {
+        console.log("Произошла ошибка при создании альбома");
+    }
+}
+
+export const deleteAlbum = async (id: string) => {
+    try {
+        const responce = await axios.delete(`albums/${id}`, configApi)
+        return responce.data
+    } catch (e) {
+        console.log("Произошла ошибка при удалении альбома");
+    }
+}
+
+export const addTrackAlbum = async (id: 'string', trackId: 'string') => {
+    try {
+        const responce = await axios.post(`albums/${id}`, { trackId }, configApi)
+        return responce.data
+    } catch (e) {
+        console.log("Произошла ошибка при добавлении трека в альбом");
+    }
+}
+
+export const deleteTrackAlbum = async (id: 'string', trackId: 'string') => {
+    try {
+        const responce = await axios.put(`albums/${id}`, { trackId }, configApi)
+        return responce.data
+    } catch (e) {
+        console.log("Произошла ошибка при удалении трека из альбома");
     }
 }
