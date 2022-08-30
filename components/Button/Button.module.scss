@@ -4,3 +4,11 @@
     background-color: #b59a26;
     border-radius: 100px;
 }
+
+.disabled {
+    cursor: default;
+
+    &:hover {
+        opacity: 1;
+    }
+}
