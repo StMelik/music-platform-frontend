@@ -20,6 +20,24 @@ export const fetchTracksAction = () => {
     }
 }
 
+export const fetchMoreTracksAction = (count?: number, offset?: number) => {
+    return async (dispatch: Dispatch<TrackAction>) => {
+        try {
+            const tracks = await fetchTracks(count, offset)
+            dispatch({
+                type: TrackActionTypes.FETCH_MORE_TRACKS,
+                payload: tracks
+            })
+
+        } catch (e) {
+            dispatch({
+                type: TrackActionTypes.FETCH_TRACKS_ERROR,
+                payload: 'Произошла ошибка при загрузки треков'
+            })
+        }
+    }
+}
+
 export const searchTracksAction = (query: string) => {
     return async (dispatch: Dispatch<TrackAction>) => {
         try {
@@ -47,6 +65,8 @@ export const deleteTrackAction = (id: string) => {
         })
     }
 }
+
+
 
 export const openDeletePopupAction = (payload: string) => {
     return { type: TrackActionTypes.OPEN_POPUP_DELETE, payload }

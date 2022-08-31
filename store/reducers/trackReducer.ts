@@ -5,13 +5,19 @@ const initialState: ITrackState = {
     tracks: [],
     error: '',
     deletePopupOpened: false,
-    trackId: ''
+    trackId: '',
+    total: 0,
 }
 
 export const trackReducer = (state = initialState, action: TrackAction): ITrackState => {
     switch (action.type) {
         case TrackActionTypes.FETCH_TRACKS:
-            return { ...state, error: '', tracks: action.payload }
+            return {
+                ...state,
+                error: '',
+                tracks: action.payload.tracks,
+                total: action.payload.total
+            }
         case TrackActionTypes.FETCH_TRACKS_ERROR:
             return { ...state, error: action.payload }
         case TrackActionTypes.OPEN_POPUP_DELETE:
@@ -22,6 +28,12 @@ export const trackReducer = (state = initialState, action: TrackAction): ITrackS
             return {
                 ...state,
                 tracks: state.tracks.filter(track => track._id != action.payload)
+            }
+
+        case TrackActionTypes.FETCH_MORE_TRACKS:
+            return {
+                ...state,
+                tracks: [...state.tracks, ...action.payload.tracks],
             }
         default:
             return state

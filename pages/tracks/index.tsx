@@ -9,10 +9,12 @@ import { NextThunkDispatch, wrapper } from "../../store/index";
 import { useDispatch } from 'react-redux'
 
 import { fetchTracksAction, searchTracksAction } from "../../store/actions-creators/track";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Popup from '../../components/Popup/Popup'
 import { useActions } from "../../hooks/useActions";
+
+let observer
 
 function Index() {
     const router = useRouter()
@@ -20,17 +22,50 @@ function Index() {
     const [query, setQuery] = useState<string>('')
     const [timer, setTimer] = useState(null)
 
+    const target = useRef()
 
-    const { tracks, error, deletePopupOpened, trackId } = useTypedSelector(store => store.track)
+    const { fetchMoreTracksAction, fetchTracksAction } = useActions()
+
+    const { tracks, error, deletePopupOpened, trackId, total } = useTypedSelector(store => store.track)
 
     const { closeDeletePopupAction, deleteTrackAction } = useActions()
 
     const dispatch = useDispatch() as NextThunkDispatch
 
+    // Блокировка скролла при открытии попапа
     useEffect(() => {
         document.body.style.overflowY = deletePopupOpened ? "hidden" : ""
         document.body.style.paddingRight = deletePopupOpened ? "16px" : "0"
     }, [deletePopupOpened])
+
+    // Подгрузка треков при скролле к концу страницы
+    useEffect(() => {
+        let page: number = 1
+        let length: number = tracks.length
+        const countFetchTracks: number = 10
+
+        const callback = entries => {
+            if (entries[0].isIntersecting) {
+                if (total > length) {
+
+                    fetchMoreTracksAction(countFetchTracks, page * countFetchTracks)
+                    page++
+                    length += countFetchTracks
+
+                }
+            }
+        }
+
+        if (!observer) {
+            observer = new IntersectionObserver(callback, { threshold: 1.0 });
+        } else {
+            observer.disconnect()
+        }
+
+        if (!query) {
+            observer.observe(target.current)
+        }
+    }, [query])
 
     async function search(e: React.ChangeEvent<HTMLInputElement>) {
         setQuery(e.target.value)
@@ -39,10 +74,13 @@ function Index() {
         }
         setTimer(
             setTimeout(async () => {
-                await dispatch(await searchTracksAction(e.target.value))
+                if (query) {
+                    await dispatch(await searchTracksAction(e.target.value))
+                }
             }, 500)
         )
     }
+
 
     if (error) {
         return (
@@ -72,6 +110,7 @@ function Index() {
                     />
                 </label>
                 <TrackList tracks={tracks} />
+                <div className={styles.target} ref={target} />
             </MainLayout>
             <Popup
                 opened={deletePopupOpened}
@@ -87,9 +126,10 @@ function Index() {
 
 export default Index
 
-export const getServerSideProps = wrapper.getServerSideProps((context) => async () => {
-    // console.log('context =>', context);
-    const dispatch = context.dispatch as NextThunkDispatch
+export const getServerSideProps = wrapper.getServerSideProps((store) => async () => {
+    const dispatch = store.dispatch as NextThunkDispatch
     await dispatch(await fetchTracksAction())
+
+    return { props: {} }
 })
 
