@@ -84,21 +84,9 @@ const AlbumPage = () => {
 
 export default AlbumPage
 
-// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-//     const album = await getAlbum(String(params.id))
-
-//     return {
-//         props: {
-//             serverAlbum: album
-//         }
-//     }
-// }
-
 export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ params }) => {
     const dispatch = store.dispatch as NextThunkDispatch
     const hasTracks = store.getState().track.tracks.length > 0
-
-    // const album = await getAlbum(String(params.id))
 
     await dispatch(getAlbumAction(String(params.id)))
 
@@ -106,9 +94,5 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
         await dispatch(fetchTracksAction())
     }
 
-    return {
-        props: {
-            // serverAlbum: album
-        }
-    }
+    return { props: {} }
 })
