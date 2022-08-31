@@ -1,6 +1,9 @@
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useActions } from '../../hooks/useActions';
 import { useTypedSelector } from '../../hooks/useTypedSelector';
+import { NextThunkDispatch } from '../../store';
+import { searchTracksAction } from '../../store/actions-creators/track';
 import { ITrack } from '../../types/track';
 import PopupTrackItem from '../PopupTrackItem/PopupTrackItem';
 import styles from './PopupTrackList.module.scss'
@@ -17,8 +20,13 @@ const PopupTrackList = ({ onClose, tracks }: PopupTrackListProps) => {
     const { currentALbum } = useTypedSelector(store => store.album)
     const { total } = useTypedSelector(store => store.track)
 
+
+    const [timer, setTimer] = useState(null)
+
     const target = useRef()
     const { fetchMoreTracksAction, fetchTracksAction } = useActions()
+
+    const dispatch = useDispatch() as NextThunkDispatch
 
     // Подгрузка треков при скролле к концу страницы
     useEffect(() => {
@@ -47,10 +55,24 @@ const PopupTrackList = ({ onClose, tracks }: PopupTrackListProps) => {
         if (!query) {
             observer.observe(target.current)
         }
-    }, [])
+    }, [query])
 
     function handleClosePopup() {
         onClose()
+    }
+
+    async function search(e: React.ChangeEvent<HTMLInputElement>) {
+        setQuery(e.target.value)
+        if (timer) {
+            clearTimeout(timer)
+        }
+        setTimer(
+            setTimeout(async () => {
+                if (query) {
+                    await dispatch(await searchTracksAction(e.target.value))
+                }
+            }, 500)
+        )
     }
 
     return (
@@ -60,13 +82,15 @@ const PopupTrackList = ({ onClose, tracks }: PopupTrackListProps) => {
             />
             <input type="text"
                 placeholder='Поиск'
+                value={query}
+                onInput={search}
             />
             <ul className={styles.list}>
                 {tracks?.map(track =>
                     <PopupTrackItem
                         key={track._id}
                         track={track}
-                        isActive={currentALbum.tracks.map(t => t._id).includes(track._id)}
+                        isActive={currentALbum?.tracks.map(t => t._id).includes(track._id)}
                     />
                 )}
                 <div ref={target} />

@@ -1,3 +1,4 @@
+import React from 'react'
 import styles from './Step1.module.scss'
 
 function Step1({ onNext, value, onChange }) {
