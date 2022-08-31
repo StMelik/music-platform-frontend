@@ -23,8 +23,21 @@
     }
 }
 
-.subtitle {
-    font-weight: 500;
-    font-size: 40px;
+.listTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
     margin-bottom: 20px;
+    position: relative;
+
+    h3 {
+        font-weight: 500;
+        font-size: 40px;
+    }
+
+    ul {
+        right: 50px;
+        top: -120px;
+    }
 }

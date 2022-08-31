@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 // import Link from 'next/link'
 import styles from '../../styles/AlbumPage.module.scss'
@@ -11,48 +11,35 @@ import { IAlbum } from '../../types/album'
 import MainLayout from '../../layouts/MainLayout'
 import TrackList from '../../components/TrackList/TrackList'
 import Button from '../../components/Button/Button'
-
-const album: IAlbum = {
-    _id: '12aasd12sd2a',
-    name: 'Новые',
-    author: 'Анастасия',
-    picture: 'https://www.meme-arsenal.com/memes/50569ac974c29121ff9075e45a334942.jpg',
-    tracks: [
-        {
-            _id: 'saqdasd546asd',
-            name: 'Saga Name',
-            artist: 'Fort',
-            text: '',
-            listens: 10,
-            picture: 'https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg',
-            audio: '',
-            comments: []
-        },
-        {
-            _id: 'sasdasd546asd',
-            name: 'Saga Name',
-            artist: 'Fort',
-            text: '',
-            listens: 10,
-            picture: 'https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg',
-            audio: '',
-            comments: []
-        },
-        {
-            _id: 'sasd54as6asd',
-            name: 'Saga Name',
-            artist: 'Fort',
-            text: '',
-            listens: 10,
-            picture: 'https://avatarko.ru/img/kartinka/33/multfilm_lyagushka_32117.jpg',
-            audio: '',
-            comments: []
-        }
-    ]
-}
+import { deleteAlbum, getAlbum } from '../../utils/api'
+import PopupTrackList from '../../components/PopupTrackList/PopupTrackList'
+import { GetServerSideProps } from 'next'
+import { NextThunkDispatch, wrapper } from '../../store'
+import { fetchTracksAction } from '../../store/actions-creators/track'
+import { getAlbumAction } from '../../store/actions-creators/album'
 
 const AlbumPage = () => {
     const router = useRouter()
+
+    const [isOpenList, setOpenList] = useState(false)
+
+    const { currentALbum } = useTypedSelector(store => store.album)
+    const { tracks } = useTypedSelector(store => store.track)
+
+    function handleDeleteAlbum() {
+        const id = String(router.query.id)
+        deleteAlbum(id)
+            .then(() => router.push('/albums'))
+            .catch(console.log)
+    }
+
+    function openTrackList() {
+        setOpenList(true)
+    }
+
+    function closeTrackList() {
+        setOpenList(false)
+    }
 
     return (
         <MainLayout>
@@ -61,20 +48,67 @@ const AlbumPage = () => {
                 onClick={() => router.push('/albums')}
             />
             <div className={styles.top}>
-                <img src={album.picture} alt={album.name} />
+                <img src={SERVER_URL + currentALbum?.picture} alt={currentALbum?.name} />
                 <div className={styles.info}>
-                    <p className="name">Альбом - {album.name}</p>
-                    <p className="author">Автор - {album.author}</p>
-                    <p className="tracks">Треков: {album.tracks.length}</p>
+                    <p className="name">Альбом - {currentALbum?.name}</p>
+                    <p className="author">Автор - {currentALbum?.author}</p>
+                    <p className="tracks">Треков: {currentALbum?.tracks.length}</p>
+                    <Button
+                        text="Удалить альбом"
+                        onClick={handleDeleteAlbum}
+                    />
                 </div>
             </div>
-            <h3 className={styles.subtitle}>Список треков</h3>
+            <div className={styles.listTop}>
+                <h3>Список треков</h3>
+                <Button
+                    text='Добавить трек'
+                    onClick={openTrackList}
+                />
+                {isOpenList &&
+                    <PopupTrackList
+                        tracks={tracks}
+                        onClose={closeTrackList}
+                    />
+                }
+            </div>
+
             <TrackList
-                tracks={album.tracks}
+                tracks={currentALbum?.tracks}
             />
+
         </MainLayout>
 
     )
 }
 
 export default AlbumPage
+
+// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+//     const album = await getAlbum(String(params.id))
+
+//     return {
+//         props: {
+//             serverAlbum: album
+//         }
+//     }
+// }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ params }) => {
+    const dispatch = store.dispatch as NextThunkDispatch
+    const hasTracks = store.getState().track.tracks.length > 0
+
+    // const album = await getAlbum(String(params.id))
+
+    await dispatch(getAlbumAction(String(params.id)))
+
+    if (!hasTracks) {
+        await dispatch(fetchTracksAction())
+    }
+
+    return {
+        props: {
+            // serverAlbum: album
+        }
+    }
+})

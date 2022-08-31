@@ -56,7 +56,7 @@ const AlbumItem: React.FC<AlbumItemProps> = ({ album }) => {
             className={styles.album}
             onClick={() => router.push(`/albums/${album._id}`)}
         >
-            <img src={album.picture} alt={album.name} />
+            <img src={SERVER_URL + album.picture} alt={album.name} />
             <p className={styles.name}>{album.name}</p>
         </li >
     )

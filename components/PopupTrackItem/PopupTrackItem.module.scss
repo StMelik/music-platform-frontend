@@ -1,0 +1,72 @@
+.item {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    gap: 15px;
+    background-color: #ededed;
+
+    img {
+        display: block;
+        object-fit: cover;
+        object-position: center;
+        width: 50px;
+        height: 50px;
+    }
+
+    div {
+        text-align: center;
+        padding: 5px 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 5px;
+
+        p {
+            font-size: 13px;
+            font-weight: 700;
+            color: #080808;
+
+            &:last-child {
+                color: #767070;
+            }
+        }
+    }
+
+    button {
+        width: 50px;
+        height: 50px;
+        margin-left: auto;
+        border-left: 1px solid #080808;
+        position: relative;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &:hover::before {
+            opacity: 0.5;
+        }
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-image: url("../../assets/icons/plus-icon.svg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 23px 23px;
+            transition: opacity 0.3s;
+        }
+    }
+}
+
+.done {
+    button::before {
+        background-image: url("../../assets/icons/done-icon.svg");
+    }
+}

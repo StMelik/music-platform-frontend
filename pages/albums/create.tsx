@@ -12,6 +12,8 @@ import MainLayout from '../../layouts/MainLayout'
 import FileUpload from '../../components/FileUpload/FileUpload'
 import Button from '../../components/Button/Button'
 import { useInput } from '../../hooks/useInput'
+import { addAlbum } from '../../utils/api'
+
 
 
 
@@ -35,7 +37,14 @@ const CreateAlbum = () => {
 
     function createAlbum() {
         console.log('Альбом создан');
+        const formData = new FormData()
+        formData.append('name', value.name)
+        formData.append('author', value.author)
+        formData.append('picture', picture)
 
+        addAlbum(formData)
+            .then(() => router.push('/albums'))
+            .catch(console.log)
     }
 
     return (

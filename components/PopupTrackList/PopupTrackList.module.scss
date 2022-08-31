@@ -1,0 +1,37 @@
+.tracks {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+    margin-bottom: 100px;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #b59a26;
+    background-color: #080808;
+
+    & > button {
+        background-image: url("../../assets/icons/close-icon.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        right: -35px;
+        top: -35px;
+    }
+
+    input {
+        padding: 5px;
+        font-size: 14px;
+        background-color: #ededed;
+        border: none;
+        border-radius: 5px;
+
+        &::placeholder {
+            color: black;
+        }
+    }
+}
