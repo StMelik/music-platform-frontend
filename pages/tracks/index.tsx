@@ -14,23 +14,20 @@ import React, { useEffect, useRef, useState } from "react";
 import Popup from '../../components/Popup/Popup'
 import { useActions } from "../../hooks/useActions";
 
-let observer
-
 function Index() {
     const router = useRouter()
+    const dispatch = useDispatch() as NextThunkDispatch
 
     const [query, setQuery] = useState<string>('')
-    const [timer, setTimer] = useState(null)
 
+    const observer = useRef(null)
+    const timer = useRef(null)
+    const page = useRef<number>(1)
     const target = useRef()
 
-    const { fetchMoreTracksAction, fetchTracksAction } = useActions()
-
+    const { fetchMoreTracksAction, fetchTracksAction, closeDeletePopupAction, deleteTrackAction } = useActions()
     const { tracks, error, deletePopupOpened, trackId, total } = useTypedSelector(store => store.track)
 
-    const { closeDeletePopupAction, deleteTrackAction } = useActions()
-
-    const dispatch = useDispatch() as NextThunkDispatch
 
     // Блокировка скролла при открытии попапа
     useEffect(() => {
@@ -38,49 +35,77 @@ function Index() {
         document.body.style.paddingRight = deletePopupOpened ? "16px" : "0"
     }, [deletePopupOpened])
 
-    // Подгрузка треков при скролле к концу страницы
     useEffect(() => {
-        let page: number = 1
-        let length: number = tracks.length
-        const countFetchTracks: number = 10
-
-        const callback = entries => {
-            if (entries[0].isIntersecting) {
-                if (total > length) {
-
-                    fetchMoreTracksAction(countFetchTracks, page * countFetchTracks)
-                    page++
-                    length += countFetchTracks
-
-                }
-            }
-        }
-
-        if (!observer) {
-            observer = new IntersectionObserver(callback, { threshold: 1.0 });
-        } else {
-            observer.disconnect()
-        }
-
-        if (!query) {
-            observer.observe(target.current)
+        if (observer.current && query) {
+            observer.current.disconnect()
+            observer.current = null
+            page.current = 1
+        } else if (!observer.current && !query) {
+            observer.current = new IntersectionObserver(addTracks, { threshold: 1.0 });
+            observer.current.observe(target.current)
         }
     }, [query])
 
-    async function search(e: React.ChangeEvent<HTMLInputElement>) {
-        setQuery(e.target.value)
-        if (timer) {
-            clearTimeout(timer)
+    function addTracks(entries) {
+        const count = 10 // Кол-во треков
+        const isIntersecting = entries[0].isIntersecting
+
+        if (isIntersecting && (page.current * count < total)) {
+            fetchMoreTracksAction(count, page.current * count)
+            page.current += 1
         }
-        setTimer(
-            setTimeout(async () => {
-                if (query) {
-                    await dispatch(await searchTracksAction(e.target.value))
-                }
-            }, 500)
-        )
     }
 
+    // Замыкание
+    // useEffect(() => {
+    //     console.log("INIT OBSERVER", !observer);
+    //     // let page = 1
+
+    //     if (!observer) {
+    //         observer = new IntersectionObserver((entries) => addTracks(entries)(page, totalTracks), { threshold: 1.0 });
+    //         observer.observe(target.current)
+    //     }
+    // }, [])
+
+    // function addTracks(entries) {
+
+    //     return (page, total) => {
+    //         const count = 10
+    //         const isIntersecting = entries[0].isIntersecting // Если достигли таргета
+    //         console.log("isIntersecting", isIntersecting);
+
+
+
+    //         if (isIntersecting && total.current < 33) {
+    //             console.log("FETCH MORE TRACKS");
+    //             fetchMoreTracksAction(count, page.current * count)
+    //             console.log("PAGE", page.current);
+    //             page.current += 1
+    //             total.current += count
+    //             console.log('total', total.current);
+
+    //         }
+    //     }
+
+    // }
+
+    async function search(e: React.ChangeEvent<HTMLInputElement>) {
+        const query = e.target.value
+
+        if (query) {
+            setQuery(query)
+        }
+        else {
+            await fetchTracksAction()
+            setQuery(query)
+        }
+
+        if (timer.current) clearTimeout(timer.current)
+
+        timer.current = setTimeout(async () => {
+            if (query) await dispatch(await searchTracksAction(query))
+        }, 500)
+    }
 
     if (error) {
         return (
