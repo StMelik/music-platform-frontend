@@ -70,7 +70,7 @@ export const getAlbum = async (id: string) => {
     }
 }
 
-export const addAlbum = async (album: IAlbum) => {
+export const addAlbum = async (album: FormData) => {
     try {
         return axios.post('albums', album, configApi)
     } catch (e) {
