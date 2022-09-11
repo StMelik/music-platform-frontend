@@ -1,7 +1,17 @@
 import React from 'react'
 import styles from './Step1.module.scss'
 
-function Step1({ onNext, value, onChange }) {
+interface Step1Props {
+    onNext: React.MouseEventHandler<HTMLButtonElement>,
+    onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>
+    value: {
+        name: string,
+        artist: string,
+        text: string,
+    },
+}
+
+const Step1: React.FC<Step1Props> = ({ onNext, value, onChange }) => {
     return (
         <form
             className={styles.form}
@@ -31,7 +41,9 @@ function Step1({ onNext, value, onChange }) {
                 <button
                     type="button"
                     onClick={onNext}
-                >Далее</button>
+                >
+                    Далее
+                </button>
             }
         </form>
     )

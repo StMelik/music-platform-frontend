@@ -59,4 +59,4 @@ export type AlbumAction =
     GetAlbumAction |
     GetAlbumErrorAction |
     AddTrackAction |
-    DeleteTrackAction 
+    DeleteTrackAction

@@ -1,3 +1,5 @@
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch } from 'react-redux'
 import MainLayout from "../../layouts/MainLayout";
 import styles from '../../styles/tracks.module.scss'
 import { useRouter } from "next/router";
@@ -5,12 +7,7 @@ import TrackList from "../../components/TrackList/TrackList";
 import Button from "../../components/Button/Button";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { NextThunkDispatch, wrapper } from "../../store/index";
-
-import { useDispatch } from 'react-redux'
-
 import { fetchTracksAction, searchTracksAction } from "../../store/actions-creators/track";
-import React, { useEffect, useRef, useState } from "react";
-
 import Popup from '../../components/Popup/Popup'
 import { useActions } from "../../hooks/useActions";
 import { useObserver } from "../../hooks/useObserver";
@@ -18,13 +15,10 @@ import { useObserver } from "../../hooks/useObserver";
 function Index() {
     const router = useRouter()
     const dispatch = useDispatch() as NextThunkDispatch
-
     const [query, setQuery] = useState<string>('')
-
     const timer = useRef(null)
     const target = useRef()
-
-    const { fetchMoreTracksAction, fetchTracksAction, closeDeletePopupAction, deleteTrackAction } = useActions()
+    const { fetchTracksAction, closeDeletePopupAction, deleteTrackAction } = useActions()
     const { tracks, error, deletePopupOpened, trackId, total } = useTypedSelector(store => store.track)
 
     useObserver(target, query)
@@ -36,8 +30,7 @@ function Index() {
     }, [deletePopupOpened])
 
     async function search(e: React.ChangeEvent<HTMLInputElement>) {
-        const query = e.target.value
-
+        const query: string = e.target.value
         if (query) {
             setQuery(query)
         }
@@ -47,7 +40,6 @@ function Index() {
         }
 
         if (timer.current) clearTimeout(timer.current)
-
         timer.current = setTimeout(async () => {
             if (query) await dispatch(await searchTracksAction(query))
         }, 500)
@@ -103,4 +95,3 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ()
 
     return { props: {} }
 })
-

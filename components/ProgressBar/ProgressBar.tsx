@@ -1,18 +1,14 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { formatTime } from '../../utils/formatTime'
-
-// import Link from 'next/link'
 import styles from './ProgressBar.module.scss'
 
 interface ProgressBarProps {
     nowTime: number,
     totalTime: number,
-    onChange: Function,
+    onChange: React.ChangeEventHandler<HTMLInputElement>,
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ nowTime, totalTime, onChange }) => {
-
-
     return (
         <div className={styles.progressBar}>
             <input

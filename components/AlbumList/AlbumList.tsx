@@ -1,9 +1,7 @@
 import React from 'react'
-
 import styles from './AlbumList.module.scss'
 import AlbumItem from '../AlbumItem/AlbumItem'
 import { IAlbum } from '../../types/album'
-
 
 interface AlbumListProps {
     albums: IAlbum[]
@@ -19,9 +17,7 @@ const AlbumList: React.FC<AlbumListProps> = ({ albums }) => {
                     album={album}
                 />
             )}
-            <AlbumItem
-                album={"create"}
-            />
+            <AlbumItem album={"create"} />
         </ul>
     )
 }

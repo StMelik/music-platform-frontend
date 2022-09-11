@@ -66,8 +66,6 @@ export const deleteTrackAction = (id: string) => {
     }
 }
 
-
-
 export const openDeletePopupAction = (payload: string) => {
     return { type: TrackActionTypes.OPEN_POPUP_DELETE, payload }
 }

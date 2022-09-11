@@ -1,19 +1,15 @@
-import React, { useRef } from 'react'
-
-// import Link from 'next/link'
+import React from 'react'
 import styles from './VolumeBar.module.scss'
 
 interface VolumeBarProps {
     nowVolume: number,
-    onChange: Function,
+    onChange: React.ChangeEventHandler<HTMLInputElement>,
 }
 
 const VolumeBar: React.FC<VolumeBarProps> = ({ nowVolume, onChange }) => {
-    const active = false
-
     return (
         <div className={styles.volumeBar}>
-            <div className={styles.icon}></div>
+            <div className={styles.icon} />
             <input
                 className={styles.range}
                 type="range"

@@ -10,7 +10,6 @@ const rootReducer = combineReducers({
     album: albumReducer,
 })
 
-
 // create your reducer
 export const reducer = (state, action) => {
     if (action.type === HYDRATE) {

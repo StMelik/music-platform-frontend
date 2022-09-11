@@ -1,21 +1,14 @@
-import React, { useRef } from 'react'
-
-// import Link from 'next/link'
-import styles from './FileUpload.module.scss'
+import React, { Dispatch, ReactNode, useRef } from 'react'
+// import styles from './FileUpload.module.scss'
 
 interface FileUploadProps {
-    setFile: Function,
+    setFile: Dispatch<File>,
     accept: string,
-    children: any,
+    children: ReactNode,
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({ setFile, accept, children }) => {
-
     const ref = useRef<HTMLInputElement>()
-
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFile(e.target.files[0])
-    }
 
     return (
         <div onClick={() => ref.current.click()}>
@@ -24,7 +17,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ setFile, accept, children }) =>
                 accept={accept}
                 style={{ display: 'none' }}
                 ref={ref}
-                onChange={onChange}
+                onChange={(e) => setFile(e.target.files[0])}
             />
             {children}
         </div>

@@ -6,22 +6,20 @@ import { useActions } from '../../hooks/useActions'
 import { SERVER_URL } from '../../utils/const'
 import { useTypedSelector } from '../../hooks/useTypedSelector'
 import { formatTime } from '../../utils/formatTime'
+import { usePage } from '../../hooks/usePage'
 
 interface TrackItemProps {
     track: ITrack,
 }
 
 const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
-
     const router = useRouter()
     const { pauseTrackAction, playTrackAction, setActiveTrackAction, openDeletePopupAction } = useActions()
     const { isPause, active, duration, currentTime } = useTypedSelector(state => state.player)
 
-    const isTrack = active?._id === track._id
-    const isPlay = isTrack && !isPause
-    const isAlbum = router.pathname.includes('albums')
-
-    const itemCl = [styles.item, styles.activeItem]
+    const isTrack: boolean = active?._id === track._id
+    const isPlay: boolean = isTrack && !isPause
+    const isAlbum: boolean = usePage('albums')
 
     function handleDeleteTrack(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
@@ -40,7 +38,7 @@ const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
 
     return (
         <li
-            className={isPlay ? itemCl.join(' ') : itemCl[0]}
+            className={`${styles.item} ${isPlay ? styles.activeItem : ""}`}
             onClick={() => router.push('/tracks/' + track._id)}
         >
             <button

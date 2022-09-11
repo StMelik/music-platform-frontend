@@ -11,12 +11,10 @@ import Step3 from "../../components/Step3/Step3";
 
 function Create() {
     const router = useRouter()
-    const [activeStep, setActiveStep] = useState(0)
+    const [activeStep, setActiveStep] = useState<number>(0)
+    const [picture, setPicture] = useState<Blob>(null)
+    const [audio, setAudio] = useState<Blob>(null)
     const formValue = useInput({ name: '', artist: '', text: '' })
-
-
-    const [picture, setPicture] = useState(null)
-    const [audio, setAudio] = useState(null)
 
     function handleNextStep() {
         if (activeStep < 2) {
@@ -40,7 +38,10 @@ function Create() {
         <MainLayout>
             <div>
                 <h1 className={styles.title}>Загрузка нового трека</h1>
-                <StepWrapper activeStep={activeStep} setActiveStep={setActiveStep}>
+                <StepWrapper
+                    activeStep={activeStep}
+                    setActiveStep={setActiveStep}
+                >
                     {activeStep === 0 &&
                         <Step1
                             onNext={handleNextStep}
@@ -65,7 +66,6 @@ function Create() {
                 </StepWrapper>
             </div>
         </MainLayout>
-
     )
 }
 

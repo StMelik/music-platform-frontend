@@ -1,35 +1,22 @@
 import React, { useEffect, useState } from 'react'
-
-// import Link from 'next/link'
 import styles from '../../styles/CreateAlbum.module.scss'
 import { useRouter } from '../../node_modules/next/router'
-import { useActions } from '../../hooks/useActions'
-import { SERVER_URL } from '../../utils/const'
-import { useTypedSelector } from '../../hooks/useTypedSelector'
-import { formatTime } from '../../utils/formatTime'
-import { IAlbum } from '../../types/album'
 import MainLayout from '../../layouts/MainLayout'
 import FileUpload from '../../components/FileUpload/FileUpload'
 import Button from '../../components/Button/Button'
 import { useInput } from '../../hooks/useInput'
 import { addAlbum } from '../../utils/api'
 
-
-
-
 const CreateAlbum = () => {
     const router = useRouter()
-    const [picture, setPicture] = useState(null)
+    const [picture, setPicture] = useState<Blob>(null)
     const [srcPreview, setSrcPreview] = useState(null)
-
     const { value, onChange } = useInput({ name: '', author: '' })
-
-    const isDisabledButton = !value.name || !value.author || !picture;
-    const textButton = picture ? "Выбрать другую" : "Загрузить обложку"
+    const isDisabledButton: boolean = !value.name || !value.author || !picture;
 
     useEffect(() => {
         if (picture) {
-            const render = new FileReader()
+            const render: FileReader = new FileReader()
             render.readAsDataURL(picture)
             render.onload = () => setSrcPreview(render.result)
         }
@@ -66,31 +53,26 @@ const CreateAlbum = () => {
                         value={value.author}
                         onChange={onChange}
                     />
-
                     <FileUpload
                         accept='image/*'
                         setFile={setPicture}
                     >
                         <Button
-                            text={textButton}
+                            text={picture ? "Выбрать другую" : "Загрузить обложку"}
                         />
                     </FileUpload>
-
                     <Button
                         text='Добавить альбом'
                         disabled={isDisabledButton}
                         onClick={createAlbum}
                     />
                 </form>
-
                 <div className={styles.preview}>
                     <img src={srcPreview} alt="" />
                     <p>{value.name || "Введите название"}</p>
-                </div >
+                </div>
             </div>
-
         </MainLayout>
-
     )
 }
 

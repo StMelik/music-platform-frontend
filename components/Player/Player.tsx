@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useRef } from 'react'
 import { useActions } from '../../hooks/useActions'
 import { useTypedSelector } from '../../hooks/useTypedSelector'
 import { ITrack } from '../../types/track'
@@ -8,7 +7,6 @@ import { addListens } from '../../utils/api'
 import { SERVER_URL } from '../../utils/const'
 import ProgressBar from '../ProgressBar/ProgressBar'
 import VolumeBar from '../VolumeBar/VolumeBar'
-
 import styles from './Player.module.scss'
 
 const Player = () => {
@@ -17,51 +15,34 @@ const Player = () => {
     const { currentALbum } = useTypedSelector(state => state.album)
     const { tracks } = useTypedSelector(state => state.track)
     const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction, setActiveTrackAction, openPlayerAction, closePlayerAction } = useActions()
-
     const audioPlayer = useRef(null)
 
     useEffect(() => {
-        if (active) {
-            setActiveTrackAction(null)
-        }
+        if (active) setActiveTrackAction(null)
     }, [])
 
     useEffect(() => {
-
         if (audioPlayer.current && active) {
-            audioPlayer.current.src = SERVER_URL + active.audio
-            audioPlayer.current.volume = volume / 100
-            audioPlayer.current.onloadedmetadata = () => {
-                setDurationAction(Math.ceil(audioPlayer.current?.duration))
-            }
-            audioPlayer.current.ontimeupdate = () => {
-                setCurrentTimeAction(Math.ceil(audioPlayer.current?.currentTime))
-            }
-
+            setAudio()
             handlePlayTrack()
-            audioPlayer.current.addEventListener('ended', endedTrack) // Не удалять
+            audioPlayer.current.addEventListener('ended', endedTrack)
         }
     }, [active])
 
-    // Управление паузой
     useEffect(() => {
         if (audioPlayer.current?.src) {
             isPause ? audioPlayer.current.pause() : audioPlayer.current.play()
         }
     }, [isPause])
 
-    function setAudio(active) {
-        if (active) {
-            audioPlayer.current.src = null
-            audioPlayer.current.src = SERVER_URL + active.audio
-            audioPlayer.current.volume = volume / 100
-            audioPlayer.current.onloadedmetadata = () => {
-                setDurationAction(Math.ceil(audioPlayer.current.duration))
-            }
-            audioPlayer.current.ontimeupdate = () => {
-                const currentTimeTrack = Math.ceil(audioPlayer.current.currentTime)
-                setCurrentTimeAction(currentTimeTrack)
-            }
+    function setAudio() {
+        audioPlayer.current.src = SERVER_URL + active.audio
+        audioPlayer.current.volume = volume / 100
+        audioPlayer.current.onloadedmetadata = () => {
+            setDurationAction(Math.ceil(audioPlayer.current?.duration))
+        }
+        audioPlayer.current.ontimeupdate = () => {
+            setCurrentTimeAction(Math.ceil(audioPlayer.current?.currentTime))
         }
     }
 
@@ -92,7 +73,7 @@ const Player = () => {
     }
 
     function changeVolume(e: React.ChangeEvent<HTMLInputElement>) {
-        const volume = +e.target.value
+        const volume: number = +e.target.value
         audioPlayer.current.volume = volume / 100
         setVolumeAction(volume)
     }
@@ -106,41 +87,36 @@ const Player = () => {
     if (!active) return null
 
     return (
-        <>
-            <div className={`${styles.player} ${isOpen ? "" : styles.playerHide}`}>
-                <button
-                    className={`${styles.viewButton} ${styles.hideButton}`}
-                    onClick={closePlayerAction}
-                />
-                <audio ref={audioPlayer} />
-                <button
-                    className={`${styles.button} ${isPause ? styles.play : styles.pause}`}
-                    onClick={handlePlayTrack}
-                />
-                <div className={styles.info}>
-                    <p className={styles.infoName}>{active.name}</p>
-                    <p className={styles.infoArtist}>{active.artist}</p>
-                </div>
-                <ProgressBar
-                    nowTime={currentTime}
-                    totalTime={duration}
-                    onChange={changeCurrentTime}
-                />
-                <VolumeBar
-                    nowVolume={volume}
-                    onChange={changeVolume}
-                />
-                {!isOpen &&
-                    <button
-                        className={`${styles.viewButton} ${styles.showButton}`}
-                        onClick={openPlayerAction}
-                    />
-                }
-
+        <div className={`${styles.player} ${isOpen ? "" : styles.playerHide}`}>
+            <button
+                className={`${styles.viewButton} ${styles.hideButton}`}
+                onClick={closePlayerAction}
+            />
+            <audio ref={audioPlayer} />
+            <button
+                className={`${styles.button} ${isPause ? styles.play : styles.pause}`}
+                onClick={handlePlayTrack}
+            />
+            <div className={styles.info}>
+                <p className={styles.infoName}>{active.name}</p>
+                <p className={styles.infoArtist}>{active.artist}</p>
             </div>
-
-        </>
-
+            <ProgressBar
+                nowTime={currentTime}
+                totalTime={duration}
+                onChange={changeCurrentTime}
+            />
+            <VolumeBar
+                nowVolume={volume}
+                onChange={changeVolume}
+            />
+            {!isOpen &&
+                <button
+                    className={`${styles.viewButton} ${styles.showButton}`}
+                    onClick={openPlayerAction}
+                />
+            }
+        </div>
     )
 }
 

@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 import styles from '../../styles/trackPage.module.scss'
 import MainLayout from "../../layouts/MainLayout";
 import { useRouter } from '../../node_modules/next/router'
@@ -7,22 +6,31 @@ import Button from "../../components/Button/Button";
 import { SERVER_URL } from '../../utils/const';
 import { useInput } from '../../hooks/useInput'
 import { getTrack, addComment } from '../../utils/api'
+import { IComment, ITrack } from '../../types/track';
 
-const TrackPage = ({ serverTrack }) => {
-    const [track, setTrack] = useState(serverTrack)
+interface TrackPageProps {
+    serverTrack: ITrack
+}
+
+interface IDefaultValue {
+    username: string,
+    text: string
+}
+
+const TrackPage: React.FC<TrackPageProps> = ({ serverTrack }) => {
     const router = useRouter()
-
-    const defaulValue = { username: '', text: '' }
+    const [track, setTrack] = useState<ITrack>(serverTrack)
+    const defaulValue: IDefaultValue = { username: '', text: '' }
     const { value, onChange, setValue } = useInput(defaulValue)
 
     async function handleAddComment() {
-        const commentData = {
+        const commentData: IComment = {
             ...value,
             trackId: track._id
         }
 
         try {
-            const comment = await addComment(commentData)
+            const comment: IComment = await addComment(commentData)
             setTrack({ ...track, comments: [...track.comments, comment] })
             setValue(defaulValue)
         } catch (e) {
@@ -43,7 +51,7 @@ const TrackPage = ({ serverTrack }) => {
                     <img
                         className={styles.picture}
                         src={SERVER_URL + track.picture}
-                        alt=""
+                        alt="Фото трека"
                     />
                     <div className={styles.trackInfo}>
                         <p className={styles.artist}>Исполнитель - {track.artist}</p>
@@ -55,7 +63,6 @@ const TrackPage = ({ serverTrack }) => {
                     <p className={styles.textTitle}>Слова песни</p>
                     <p className={styles.textParaghaph}>{track.text}</p>
                 </div>
-
                 <div className={styles.comments}>
                     <p className={styles.textTitle}>Комментарии</p>
                     <form className={styles.commentForm}>
@@ -69,7 +76,6 @@ const TrackPage = ({ serverTrack }) => {
                         />
                         <textarea
                             className={`${styles.commentInput} ${styles.commentArea}`}
-                            type="text"
                             placeholder='Ваш комментарий'
                             name='text'
                             value={value.text}
@@ -79,9 +85,10 @@ const TrackPage = ({ serverTrack }) => {
                             className={styles.commentButton}
                             type="button"
                             onClick={handleAddComment}
-                        >Отправить</button>
+                        >
+                            Отправить
+                        </button>
                     </form>
-
                     <ul className={styles.commentList}>
                         {track.comments.map(({ username, text }, i) =>
                             <li
@@ -95,19 +102,16 @@ const TrackPage = ({ serverTrack }) => {
                     </ul>
                 </div>
             </div>
-
         </MainLayout>
     )
 }
-
-export default TrackPage
 
 export const getServerSideProps = async ({ params }) => {
     const track = await getTrack(params.id)
 
     return {
-        props: {
-            serverTrack: track
-        }
+        props: { serverTrack: track }
     }
 }
+
+export default TrackPage

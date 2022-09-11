@@ -2,7 +2,6 @@ import NavBar from '../components/NavBar/NavBar'
 import styles from '../styles/index.module.scss'
 
 function Index() {
-
     return (
         <>
             <NavBar isMain />

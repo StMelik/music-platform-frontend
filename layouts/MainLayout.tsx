@@ -5,15 +5,13 @@ import Head from "../node_modules/next/head"
 
 interface MainLayoutProps {
     title?: string,
-    children: any,
+    children: React.ReactNode,
     description?: string,
     keywords?: string,
 
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, title, description, keywords }) => {
-
-
     return (
         <>
             <Head>

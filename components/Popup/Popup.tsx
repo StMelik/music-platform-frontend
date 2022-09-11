@@ -11,14 +11,13 @@ interface PopupProps {
 }
 
 const Popup: React.FC<PopupProps> = ({ opened, title, textButton, onClose, onConfirm }) => {
-
-    function handleConfirm(e) {
+    function handleConfirm(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
         onConfirm()
         onClose()
     }
 
-    function handleClose(e) {
+    function handleClose(e: React.MouseEvent<HTMLDivElement | HTMLButtonElement>) {
         e.stopPropagation()
         onClose()
     }

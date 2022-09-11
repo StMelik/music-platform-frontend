@@ -1,8 +1,7 @@
 import { ITrack } from './../../types/track';
 import { Dispatch } from "react"
 import { AlbumAction, AlbumActionTypes } from "../../types/album"
-import { addTrackAlbum, deleteTrackAlbum, fetchAlbums, getAlbum } from "../../utils/api"
-
+import { fetchAlbums, getAlbum } from "../../utils/api"
 
 export const fetchAlbumsAction = () => {
     return async (dispatch: Dispatch<AlbumAction>) => {

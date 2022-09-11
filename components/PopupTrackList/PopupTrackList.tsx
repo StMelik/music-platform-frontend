@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useActions } from '../../hooks/useActions';
 import { useObserver } from '../../hooks/useObserver';
@@ -14,20 +14,18 @@ interface PopupTrackListProps {
     tracks: ITrack[],
 }
 
-const PopupTrackList = ({ onClose, tracks }: PopupTrackListProps) => {
+const PopupTrackList: React.FC<PopupTrackListProps> = ({ onClose, tracks }) => {
+    const dispatch = useDispatch() as NextThunkDispatch
     const [query, setQuery] = useState<string>('')
     const { currentALbum } = useTypedSelector(store => store.album)
+    const { fetchTracksAction } = useActions()
     const timer = useRef(null)
     const target = useRef()
 
     useObserver(target, query)
 
-    const { fetchTracksAction } = useActions()
-
-    const dispatch = useDispatch() as NextThunkDispatch
-
     async function search(e: React.ChangeEvent<HTMLInputElement>) {
-        const query = e.target.value
+        const query: string = e.target.value
 
         if (query) {
             setQuery(query)

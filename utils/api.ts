@@ -1,6 +1,7 @@
 import axios from "axios"
-import { IAlbum } from "../types/album"
-import { IComment, ITrack } from "../types/track"
+import { IAlbum } from './../types/album';
+import { ITrack } from './../types/track';
+import { IComment } from "../types/track"
 import { SERVER_URL } from "./const"
 
 const configApi = {
@@ -16,7 +17,7 @@ export const fetchTracks = async (count?: number, offset?: number) => {
     return response.data
 }
 
-export const addTrack = (track) => {
+export const addTrack = (track: FormData) => {
     return axios.post('tracks', track, configApi)
 }
 
@@ -69,7 +70,7 @@ export const getAlbum = async (id: string) => {
     }
 }
 
-export const addAlbum = async (album) => {
+export const addAlbum = async (album: IAlbum) => {
     try {
         return axios.post('albums', album, configApi)
     } catch (e) {

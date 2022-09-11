@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { CSSTransition } from 'react-transition-group';
 import Link from 'next/link'
 import styles from './navbar.module.scss'
-import { CSSTransition } from 'react-transition-group';
 
 interface NavBarProps {
     isMain?: boolean,
@@ -16,22 +16,12 @@ const NavBar: React.FC<NavBarProps> = ({ isMain }) => {
         { href: '/tracks', text: 'Треки' },
     ]
 
-    const navCl = [styles.nav, styles.navMain]
-
-    function handleMenuOpen() {
-        setOpen(true)
-    }
-
-    function handleMenuClose() {
-        setOpen(false)
-    }
-
     return (
         <>
-            <nav className={isMain ? navCl.join(' ') : navCl[0]}>
+            <nav className={`${styles.nav} ${isMain ? styles.navMain : ""}`}>
                 <button
                     className={`${styles.buttonOpen} ${styles.button}`}
-                    onClick={handleMenuOpen}
+                    onClick={() => setOpen(true)}
                 />
                 <CSSTransition
                     in={open}
@@ -43,7 +33,7 @@ const NavBar: React.FC<NavBarProps> = ({ isMain }) => {
                     <div className={styles.menu}>
                         <button
                             className={`${styles.buttonClose} ${styles.button}`}
-                            onClick={handleMenuClose}
+                            onClick={() => setOpen(false)}
                         />
                         <ul className={styles.list}>
                             {links.map(({ href, text }, id) =>

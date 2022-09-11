@@ -64,4 +64,4 @@ export type PlayerAction =
     ISetVolumeAction |
     ISetCurrentTimeAction |
     IOpenPlayerAction |
-    IClosePlayerAction 
+    IClosePlayerAction

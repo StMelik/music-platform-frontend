@@ -1,24 +1,20 @@
-import React from 'react'
+import React, { Dispatch } from 'react'
 import styles from './StepWrapper.module.scss'
 
 interface TrackItemProps {
     activeStep: number,
-    children: any,
-    setActiveStep: Function,
+    children: React.ReactNode,
+    setActiveStep: Dispatch<number>,
 }
 
 const StepWrapper: React.FC<TrackItemProps> = ({ activeStep, setActiveStep, children }) => {
     const steps = ['1', '2', '3']
 
-
-    function getClass(i) {
-        const activeCl = `${styles.step} ${styles.stepActive}`
-        const doneCl = `${styles.step} ${styles.stepDone}`
-
+    function getClass(i: number) {
         if (i < activeStep) {
-            return doneCl
+            return `${styles.step} ${styles.stepDone}`
         } else if (i === activeStep) {
-            return activeCl
+            return `${styles.step} ${styles.stepActive}`
         } else if (i > activeStep) {
             return styles.step
         }
@@ -33,7 +29,9 @@ const StepWrapper: React.FC<TrackItemProps> = ({ activeStep, setActiveStep, chil
                         className={getClass(i)}
                         onClick={() => setActiveStep(i)}
                         disabled={i > activeStep}
-                    >{step}</button>
+                    >
+                        {step}
+                    </button>
                 )}
             </div>
             <div className="content">

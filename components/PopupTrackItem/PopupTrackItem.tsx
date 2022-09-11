@@ -11,8 +11,7 @@ interface PopupTrackItemProps {
     isActive: boolean
 }
 
-const PopupTrackItem = ({ track, isActive }: PopupTrackItemProps) => {
-    const itemCl = [styles.item, styles.done]
+const PopupTrackItem: React.FC<PopupTrackItemProps> = ({ track, isActive }) => {
     const router = useRouter()
     const { addTrackAlbumAction, deleteTrackAlbumAction } = useActions()
 
@@ -32,7 +31,7 @@ const PopupTrackItem = ({ track, isActive }: PopupTrackItemProps) => {
     }
 
     return (
-        <li className={isActive ? itemCl.join(' ') : itemCl[0]}>
+        <li className={`${styles.item} ${isActive ? styles.done : ""}`}>
             <img src={SERVER_URL + track.picture} alt={track.name} />
             <div className="info">
                 <p className="name">{track.name}</p>
