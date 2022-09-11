@@ -12,12 +12,14 @@ interface TrackItemProps {
 }
 
 const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
+
     const router = useRouter()
     const { pauseTrackAction, playTrackAction, setActiveTrackAction, openDeletePopupAction } = useActions()
     const { isPause, active, duration, currentTime } = useTypedSelector(state => state.player)
 
     const isTrack = active?._id === track._id
     const isPlay = isTrack && !isPause
+    const isAlbum = router.pathname.includes('albums')
 
     const itemCl = [styles.item, styles.activeItem]
 
@@ -55,10 +57,13 @@ const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
                 <p className={styles.infoArtist}>{track.artist}</p>
             </div>
             <div className={styles.control}>
-                <button
-                    className={styles.buttonDelete}
-                    onClick={handleDeleteTrack}
-                ></button>
+                {!isAlbum &&
+                    <button
+                        className={styles.buttonDelete}
+                        onClick={handleDeleteTrack}
+                    />
+                }
+
                 {isPlay &&
                     <div className={styles.time}>
                         {`${formatTime(currentTime)}/${formatTime(duration)}`}

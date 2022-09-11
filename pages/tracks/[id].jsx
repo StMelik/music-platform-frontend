@@ -37,7 +37,7 @@ const TrackPage = ({ serverTrack }) => {
             <div>
                 <Button
                     text="К списку"
-                    onClick={() => router.push('/tracks')}
+                    onClick={() => router.back()}
                 />
                 <div className={styles.info}>
                     <img
