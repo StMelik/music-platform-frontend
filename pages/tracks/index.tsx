@@ -13,6 +13,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import Popup from '../../components/Popup/Popup'
 import { useActions } from "../../hooks/useActions";
+import { useObserver } from "../../hooks/useObserver";
 
 function Index() {
     const router = useRouter()
@@ -20,41 +21,19 @@ function Index() {
 
     const [query, setQuery] = useState<string>('')
 
-    const observer = useRef(null)
     const timer = useRef(null)
-    const page = useRef<number>(1)
     const target = useRef()
 
     const { fetchMoreTracksAction, fetchTracksAction, closeDeletePopupAction, deleteTrackAction } = useActions()
     const { tracks, error, deletePopupOpened, trackId, total } = useTypedSelector(store => store.track)
 
+    useObserver(target, query)
 
     // Блокировка скролла при открытии попапа
     useEffect(() => {
         document.body.style.overflowY = deletePopupOpened ? "hidden" : ""
         document.body.style.paddingRight = deletePopupOpened ? "16px" : "0"
     }, [deletePopupOpened])
-
-    useEffect(() => {
-        if (observer.current && query) {
-            observer.current.disconnect()
-            observer.current = null
-            page.current = 1
-        } else if (!observer.current && !query) {
-            observer.current = new IntersectionObserver(addTracks, { threshold: 1.0 });
-            observer.current.observe(target.current)
-        }
-    }, [query])
-
-    function addTracks(entries) {
-        const count = 10 // Кол-во треков
-        const isIntersecting = entries[0].isIntersecting
-
-        if (isIntersecting && (page.current * count < total)) {
-            fetchMoreTracksAction(count, page.current * count)
-            page.current += 1
-        }
-    }
 
     async function search(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value

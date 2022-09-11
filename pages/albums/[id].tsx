@@ -25,6 +25,7 @@ const AlbumPage = () => {
 
     const { currentALbum } = useTypedSelector(store => store.album)
     const { tracks } = useTypedSelector(store => store.track)
+    const { fetchTracksAction } = useActions()
 
     function handleDeleteAlbum() {
         const id = String(router.query.id)
@@ -37,8 +38,9 @@ const AlbumPage = () => {
         setOpenList(true)
     }
 
-    function closeTrackList() {
+    async function closeTrackList() {
         setOpenList(false)
+        await fetchTracksAction()
     }
 
     return (
