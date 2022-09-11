@@ -6,6 +6,7 @@ const initialState: IPlayerState = {
     active: null,
     volume: 50,
     isPause: true,
+    isOpen: true
 }
 
 export const playerReducer = (state = initialState, action: PlayerAction): IPlayerState => {
@@ -22,6 +23,10 @@ export const playerReducer = (state = initialState, action: PlayerAction): IPlay
             return { ...state, duration: action.payload }
         case PlayerActionsTypes.SET_VOLUME:
             return { ...state, volume: action.payload }
+        case PlayerActionsTypes.OPEN_PLAYER:
+            return { ...state, isOpen: true }
+        case PlayerActionsTypes.CLOSE_PLAYER:
+            return { ...state, isOpen: false }
         default:
             return state
     }

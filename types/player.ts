@@ -6,6 +6,7 @@ export interface IPlayerState {
     duration: number;
     currentTime: number;
     isPause: boolean;
+    isOpen: boolean
 }
 
 export enum PlayerActionsTypes {
@@ -15,6 +16,8 @@ export enum PlayerActionsTypes {
     SET_DURATION = "SET_DURATION",
     SET_CURRENT_TIME = "SET_CURRENT_TIME",
     SET_VOLUME = "SET_VOLUME",
+    OPEN_PLAYER = "OPEN_PLAYER",
+    CLOSE_PLAYER = "CLOSE_PLAYER",
 }
 
 interface IPlayAction {
@@ -45,10 +48,20 @@ interface ISetCurrentTimeAction {
     payload: number,
 }
 
+interface IOpenPlayerAction {
+    type: PlayerActionsTypes.OPEN_PLAYER
+}
+
+interface IClosePlayerAction {
+    type: PlayerActionsTypes.CLOSE_PLAYER
+}
+
 export type PlayerAction =
     IPlayAction |
     IPauseAction |
     ISetActiveAction |
     ISetDurationAction |
     ISetVolumeAction |
-    ISetCurrentTimeAction
+    ISetCurrentTimeAction |
+    IOpenPlayerAction |
+    IClosePlayerAction 

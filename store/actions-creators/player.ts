@@ -25,3 +25,11 @@ export const setCurrentTimeAction = (payload: number): PlayerAction => {
 export const setActiveTrackAction = (payload: ITrack): PlayerAction => {
     return { type: PlayerActionsTypes.SET_ACTIVE, payload }
 }
+
+export const openPlayerAction = (): PlayerAction => {
+    return { type: PlayerActionsTypes.OPEN_PLAYER }
+}
+
+export const closePlayerAction = (): PlayerAction => {
+    return { type: PlayerActionsTypes.CLOSE_PLAYER }
+}

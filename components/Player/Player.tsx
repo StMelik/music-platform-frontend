@@ -10,14 +10,12 @@ import VolumeBar from '../VolumeBar/VolumeBar'
 import styles from './Player.module.scss'
 
 const Player = () => {
-    const { isPause, volume, active, duration, currentTime } = useTypedSelector(state => state.player)
+    const { isPause, volume, active, duration, currentTime, isOpen } = useTypedSelector(state => state.player)
     const pl = useTypedSelector(state => state.player)
     const { tracks } = useTypedSelector(state => state.track)
-    const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction, setActiveTrackAction } = useActions()
+    const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction, setActiveTrackAction, openPlayerAction, closePlayerAction } = useActions()
 
     const audioPlayer = useRef(null)
-
-
 
     useEffect(() => {
         if (active) {
@@ -96,26 +94,41 @@ const Player = () => {
     if (!active) return null
 
     return (
-        <div className={styles.player}>
-            <audio ref={audioPlayer} />
-            <button
-                className={`${styles.button} ${isPause ? styles.play : styles.pause}`}
-                onClick={handlePlayTrack}
-            />
-            <div className={styles.info}>
-                <p className={styles.infoName}>{active.name}</p>
-                <p className={styles.infoArtist}>{active.artist}</p>
+        <>
+            <div className={`${styles.player} ${isOpen ? "" : styles.playerHide}`}>
+                <button
+                    className={`${styles.viewButton} ${styles.hideButton}`}
+                    onClick={closePlayerAction}
+                />
+                <audio ref={audioPlayer} />
+                <button
+                    className={`${styles.button} ${isPause ? styles.play : styles.pause}`}
+                    onClick={handlePlayTrack}
+                />
+                <div className={styles.info}>
+                    <p className={styles.infoName}>{active.name}</p>
+                    <p className={styles.infoArtist}>{active.artist}</p>
+                </div>
+                <ProgressBar
+                    nowTime={currentTime}
+                    totalTime={duration}
+                    onChange={changeCurrentTime}
+                />
+                <VolumeBar
+                    nowVolume={volume}
+                    onChange={changeVolume}
+                />
+                {!isOpen &&
+                    <button
+                        className={`${styles.viewButton} ${styles.showButton}`}
+                        onClick={openPlayerAction}
+                    />
+                }
+
             </div>
-            <ProgressBar
-                nowTime={currentTime}
-                totalTime={duration}
-                onChange={changeCurrentTime}
-            />
-            <VolumeBar
-                nowVolume={volume}
-                onChange={changeVolume}
-            />
-        </div>
+
+        </>
+
     )
 }
 

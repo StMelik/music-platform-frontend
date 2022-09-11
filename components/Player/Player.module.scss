@@ -9,6 +9,32 @@
     gap: 30px;
     align-items: center;
     padding: 15px 100px 15px 50px;
+    transition: left 0.3s;
+}
+
+.playerHide {
+    left: calc(-100% + 40px);
+}
+
+.viewButton {
+    position: absolute;
+    width: 40px;
+    top: 0;
+    bottom: 0;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url("../../assets/icons/hide-icon.svg");
+}
+
+.hideButton {
+    left: 0;
+    background-position: right;
+}
+
+.showButton {
+    right: 0;
+    transform: rotate(180deg);
+    background-position: 13px;
 }
 
 .button {
