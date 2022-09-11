@@ -56,39 +56,6 @@ function Index() {
         }
     }
 
-    // Замыкание
-    // useEffect(() => {
-    //     console.log("INIT OBSERVER", !observer);
-    //     // let page = 1
-
-    //     if (!observer) {
-    //         observer = new IntersectionObserver((entries) => addTracks(entries)(page, totalTracks), { threshold: 1.0 });
-    //         observer.observe(target.current)
-    //     }
-    // }, [])
-
-    // function addTracks(entries) {
-
-    //     return (page, total) => {
-    //         const count = 10
-    //         const isIntersecting = entries[0].isIntersecting // Если достигли таргета
-    //         console.log("isIntersecting", isIntersecting);
-
-
-
-    //         if (isIntersecting && total.current < 33) {
-    //             console.log("FETCH MORE TRACKS");
-    //             fetchMoreTracksAction(count, page.current * count)
-    //             console.log("PAGE", page.current);
-    //             page.current += 1
-    //             total.current += count
-    //             console.log('total', total.current);
-
-    //         }
-    //     }
-
-    // }
-
     async function search(e: React.ChangeEvent<HTMLInputElement>) {
         const query = e.target.value
 

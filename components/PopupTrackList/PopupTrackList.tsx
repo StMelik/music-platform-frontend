@@ -13,66 +13,63 @@ interface PopupTrackListProps {
     tracks: ITrack[],
 }
 
-let observer = null
-
 const PopupTrackList = ({ onClose, tracks }: PopupTrackListProps) => {
     const [query, setQuery] = useState<string>('')
     const { currentALbum } = useTypedSelector(store => store.album)
     const { total } = useTypedSelector(store => store.track)
 
 
-    const [timer, setTimer] = useState(null)
-
+    const observer = useRef(null)
+    const timer = useRef(null)
+    const page = useRef<number>(1)
     const target = useRef()
+
     const { fetchMoreTracksAction, fetchTracksAction } = useActions()
 
     const dispatch = useDispatch() as NextThunkDispatch
 
     // Подгрузка треков при скролле к концу страницы
     useEffect(() => {
-        let page: number = 1
-        let length: number = tracks.length
-        const countFetchTracks: number = 10
-
-        const callback = entries => {
-            if (entries[0].isIntersecting) {
-                if (total > length) {
-
-                    fetchMoreTracksAction(countFetchTracks, page * countFetchTracks)
-                    page++
-                    length += countFetchTracks
-
-                }
-            }
-        }
-
-        if (!observer) {
-            observer = new IntersectionObserver(callback, { threshold: 1.0 });
-        } else {
-            observer.disconnect()
-        }
-
-        if (!query) {
-            observer.observe(target.current)
+        if (observer.current && query) {
+            observer.current.disconnect()
+            observer.current = null
+            page.current = 1
+        } else if (!observer.current && !query) {
+            observer.current = new IntersectionObserver(addTracks, { threshold: 1.0 });
+            observer.current.observe(target.current)
         }
     }, [query])
 
-    function handleClosePopup() {
-        onClose()
+    function addTracks(entries) {
+        const count = 10 // Кол-во треков
+        const isIntersecting = entries[0].isIntersecting
+
+        if (isIntersecting && (page.current * count < total)) {
+            fetchMoreTracksAction(count, page.current * count)
+            page.current += 1
+        }
     }
 
     async function search(e: React.ChangeEvent<HTMLInputElement>) {
-        setQuery(e.target.value)
-        if (timer) {
-            clearTimeout(timer)
+        const query = e.target.value
+
+        if (query) {
+            setQuery(query)
         }
-        setTimer(
-            setTimeout(async () => {
-                if (query) {
-                    await dispatch(await searchTracksAction(e.target.value))
-                }
-            }, 500)
-        )
+        else {
+            await fetchTracksAction()
+            setQuery(query)
+        }
+
+        if (timer.current) clearTimeout(timer.current)
+
+        timer.current = setTimeout(async () => {
+            if (query) await dispatch(await searchTracksAction(query))
+        }, 500)
+    }
+
+    function handleClosePopup() {
+        onClose()
     }
 
     return (
