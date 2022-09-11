@@ -1,7 +1,9 @@
+import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useActions } from '../../hooks/useActions'
 import { useTypedSelector } from '../../hooks/useTypedSelector'
+import { ITrack } from '../../types/track'
 import { addListens } from '../../utils/api'
 import { SERVER_URL } from '../../utils/const'
 import ProgressBar from '../ProgressBar/ProgressBar'
@@ -10,8 +12,9 @@ import VolumeBar from '../VolumeBar/VolumeBar'
 import styles from './Player.module.scss'
 
 const Player = () => {
+    const router = useRouter()
     const { isPause, volume, active, duration, currentTime, isOpen } = useTypedSelector(state => state.player)
-    const pl = useTypedSelector(state => state.player)
+    const { currentALbum } = useTypedSelector(state => state.album)
     const { tracks } = useTypedSelector(state => state.track)
     const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction, setActiveTrackAction, openPlayerAction, closePlayerAction } = useActions()
 
@@ -69,8 +72,17 @@ const Player = () => {
     }
 
     function playNextTrack() {
-        const currentIndex = tracks.indexOf(active)
-        const nextTrack = tracks[currentIndex + 1]
+        const isAlbum: boolean = router.pathname.includes('albums')
+        const albumTracks: ITrack[] | null = currentALbum?.tracks
+        let nextTrack: ITrack | null = null
+
+        if (isAlbum) {
+            const currentIndex: number = albumTracks.indexOf(active)
+            nextTrack = albumTracks[currentIndex + 1]
+        } else {
+            const currentIndex: number = tracks.indexOf(active)
+            nextTrack = tracks[currentIndex + 1]
+        }
 
         !!nextTrack ? setActiveTrackAction(nextTrack) : setActiveTrackAction(null)
     }
