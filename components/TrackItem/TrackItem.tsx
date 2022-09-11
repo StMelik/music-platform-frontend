@@ -1,6 +1,4 @@
 import React from 'react'
-
-// import Link from 'next/link'
 import styles from './trackitem.module.scss'
 import { ITrack } from '../../types/track'
 import { useRouter } from '../../node_modules/next/router'
@@ -16,7 +14,6 @@ interface TrackItemProps {
 const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
     const router = useRouter()
     const { pauseTrackAction, playTrackAction, setActiveTrackAction, openDeletePopupAction } = useActions()
-
     const { isPause, active, duration, currentTime } = useTypedSelector(state => state.player)
 
     const isTrack = active?._id === track._id
@@ -24,13 +21,12 @@ const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
 
     const itemCl = [styles.item, styles.activeItem]
 
-    function handleDeleteTrack(e) {
+    function handleDeleteTrack(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
-        console.log(track._id);
         openDeletePopupAction(track._id)
     }
 
-    function handlePlayTrack(e) {
+    function handlePlayTrack(e: React.MouseEvent<HTMLButtonElement>) {
         e.stopPropagation()
 
         if (active && isTrack) {

@@ -88,3 +88,7 @@ export const addTrackAlbum = async (albumId: string, trackId: string) => {
 export const deleteTrackAlbum = async (albumId: string, trackId: string) => {
     return await axios.put(`albums/${albumId}`, { trackId }, configApi)
 }
+
+export const addListens = async (trackId: string) => {
+    return await axios.post(`tracks/listen/${trackId}`, null, configApi)
+}

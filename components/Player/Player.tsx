@@ -9,40 +9,56 @@ import VolumeBar from '../VolumeBar/VolumeBar'
 
 import styles from './Player.module.scss'
 
-let audio = null;
-
 const Player = () => {
     const { isPause, volume, active, duration, currentTime } = useTypedSelector(state => state.player)
+    const pl = useTypedSelector(state => state.player)
     const { tracks } = useTypedSelector(state => state.track)
     const { pauseTrackAction, playTrackAction, setVolumeAction, setCurrentTimeAction, setDurationAction, setActiveTrackAction } = useActions()
 
-    useEffect(() => {
-        if (!audio) {
-            audio = new Audio()
+    const audioPlayer = useRef(null)
 
-        } else {
-            setAudio()
+
+
+    useEffect(() => {
+        if (active) {
+            setActiveTrackAction(null)
+        }
+    }, [])
+
+    useEffect(() => {
+
+        if (audioPlayer.current && active) {
+            audioPlayer.current.src = SERVER_URL + active.audio
+            audioPlayer.current.volume = volume / 100
+            audioPlayer.current.onloadedmetadata = () => {
+                setDurationAction(Math.ceil(audioPlayer.current?.duration))
+            }
+            audioPlayer.current.ontimeupdate = () => {
+                setCurrentTimeAction(Math.ceil(audioPlayer.current?.currentTime))
+            }
+
             handlePlayTrack()
-            audio.addEventListener('ended', endedTrack)
+            audioPlayer.current.addEventListener('ended', endedTrack) // Не удалять
         }
     }, [active])
 
+    // Управление паузой
     useEffect(() => {
-        if (audio.src) {
-            isPause ? audio.pause() : audio.play()
+        if (audioPlayer.current?.src) {
+            isPause ? audioPlayer.current.pause() : audioPlayer.current.play()
         }
     }, [isPause])
 
-    function setAudio() {
+    function setAudio(active) {
         if (active) {
-            audio.src = null
-            audio.src = SERVER_URL + active.audio
-            audio.volume = volume / 100
-            audio.onloadedmetadata = () => {
-                setDurationAction(Math.ceil(audio.duration))
+            audioPlayer.current.src = null
+            audioPlayer.current.src = SERVER_URL + active.audio
+            audioPlayer.current.volume = volume / 100
+            audioPlayer.current.onloadedmetadata = () => {
+                setDurationAction(Math.ceil(audioPlayer.current.duration))
             }
-            audio.ontimeupdate = () => {
-                const currentTimeTrack = Math.ceil(audio.currentTime)
+            audioPlayer.current.ontimeupdate = () => {
+                const currentTimeTrack = Math.ceil(audioPlayer.current.currentTime)
                 setCurrentTimeAction(currentTimeTrack)
             }
         }
@@ -51,14 +67,14 @@ const Player = () => {
     function endedTrack() {
         addListens(active._id)
         playNextTrack()
-        audio.removeEventListener('ended', endedTrack)
+        audioPlayer.current.removeEventListener('ended', endedTrack)
     }
 
     function playNextTrack() {
         const currentIndex = tracks.indexOf(active)
         const nextTrack = tracks[currentIndex + 1]
 
-        !!nextTrack ? setActiveTrackAction(nextTrack) : pauseTrackAction()
+        !!nextTrack ? setActiveTrackAction(nextTrack) : setActiveTrackAction(null)
     }
 
     function handlePlayTrack() {
@@ -67,13 +83,13 @@ const Player = () => {
 
     function changeVolume(e: React.ChangeEvent<HTMLInputElement>) {
         const volume = +e.target.value
-        audio.volume = volume / 100
+        audioPlayer.current.volume = volume / 100
         setVolumeAction(volume)
     }
 
     function changeCurrentTime(e: React.ChangeEvent<HTMLInputElement>) {
         const currentTime = +e.target.value
-        audio.currentTime = currentTime
+        audioPlayer.current.currentTime = currentTime
         setCurrentTimeAction(currentTime)
     }
 
@@ -81,6 +97,7 @@ const Player = () => {
 
     return (
         <div className={styles.player}>
+            <audio ref={audioPlayer} />
             <button
                 className={`${styles.button} ${isPause ? styles.play : styles.pause}`}
                 onClick={handlePlayTrack}
