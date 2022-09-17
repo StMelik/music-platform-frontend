@@ -25,4 +25,4 @@
 * HTML5
 
 ## Адрес проекта
-[*](*)
+[https://music-platform-frontend-six.vercel.app/](https://music-platform-frontend-six.vercel.app/)
