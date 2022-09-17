@@ -14,6 +14,7 @@ function Create() {
     const [activeStep, setActiveStep] = useState<number>(0)
     const [picture, setPicture] = useState<Blob>(null)
     const [audio, setAudio] = useState<Blob>(null)
+    const [buttonText, setButtonText] = useState('Сохранить трек')
     const formValue = useInput({ name: '', artist: '', text: '' })
 
     function handleNextStep() {
@@ -21,6 +22,7 @@ function Create() {
             setActiveStep(prev => prev + 1)
         } else {
             const { name, artist, text } = formValue.value
+            setButtonText('Идет загрузка...')
             const formData = new FormData()
             formData.append('name', name)
             formData.append('artist', artist)
@@ -31,6 +33,7 @@ function Create() {
             addTrack(formData)
                 .then(() => router.push('/tracks'))
                 .catch(console.log)
+                .finally(() => setButtonText('Сохранить трек'))
         }
     }
 
@@ -58,6 +61,7 @@ function Create() {
                     }
                     {activeStep === 2 &&
                         <Step3
+                            buttonText={buttonText}
                             audio={audio}
                             setAudio={setAudio}
                             onNext={handleNextStep}

@@ -6,10 +6,11 @@ import styles from './Step3.module.scss'
 interface Step3Props {
     onNext: React.MouseEventHandler<HTMLButtonElement>,
     setAudio: Dispatch<File>,
-    audio: Blob
+    audio: Blob,
+    buttonText: string,
 }
 
-const Step3: React.FC<Step3Props> = ({ audio, setAudio, onNext }) => {
+const Step3: React.FC<Step3Props> = ({ audio, setAudio, onNext, buttonText }) => {
     return (
         <div className={styles.step3}>
             <FileUpload
@@ -24,7 +25,7 @@ const Step3: React.FC<Step3Props> = ({ audio, setAudio, onNext }) => {
                     type="button"
                     onClick={onNext}
                 >
-                    Сохранить трек
+                    {buttonText}
                 </button>
             }
         </div>
